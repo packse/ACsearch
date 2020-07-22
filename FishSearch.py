@@ -13,7 +13,7 @@ def main():
 
     if __name__ == '__main__':
         while 1:
-            selection = input("Select an Option:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish\n")
+            selection = input("Select an Option:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish\n5.Edit Fish\n")
             if selection == '1':
                 find_fish()
                 break
@@ -25,6 +25,9 @@ def main():
                 break
             elif selection == '4':
                 delete_text_menu()
+                break
+            elif selection == '5':
+                edit_text_menu()
                 break
             else:
                 print("Invalid Input")
@@ -49,10 +52,15 @@ def add_all_fish(fish_arr):
 
 def add_fish():
     valid = 0
+    fish_array = get_all_fish()
+    # Only includes names of fish into array due to [0] and converts them all to uppercase to check against them later
+    # for duplicate entries
+    checking_array = [fish[0].upper() for fish in fish_array]
+    print(print_fish())
     f_name = input("Enter Fish Name: ")
-    all_fish = get_all_fish()
     while valid == 0:
-        if not f_name.isdigit() and f_name.upper() not in [f_name.upper() for f_name in all_fish[0]]:
+        # Checks for digits in name or duplicate names
+        if (f_name.isalpha()) and (f_name.upper() not in checking_array):
             valid = 1
         else:
             f_name = input("Fish either exists or invalid name. Please enter a valid fish name: ")
@@ -66,6 +74,7 @@ def add_fish():
             f_price = input("Please enter a valid fish price: ")
 
     valid = 0
+    # This section is used to display the menu of location options correctly with no hanging comma
     input_text = ""
     for idloc, location in LOCATIONS_CONST:
         input_text += str(idloc) + "." + location
@@ -79,7 +88,7 @@ def add_fish():
     while valid == 0:
         location_index = [item
                           for item in LOCATIONS_CONST
-                          if item[0] == f_location or item[1].upper()== f_location.upper()]
+                          if item[0] == f_location or item[1].upper() == f_location.upper()]
 
         if not location_index == []:
             f_location = location_index[0][1]
@@ -165,6 +174,84 @@ def delete_fish(fish_name):
         a.write("Name,Price,Location\n")
         for i in range (0, arr_length):
             a.write(fish_array_new[i][0] + ',' + str(fish_array_new[i][1]) + ',' + fish_array_new[i][2])
+            a.write('\n')
+
+
+def edit_text_menu():
+    fish_array = get_all_fish()
+    checking_array = [fish[0].upper() for fish in fish_array]
+    valid = 0
+    print(print_fish())
+    old_name = input("Please enter the name of the fish you wish to change: ")
+    while valid == 0:
+        if old_name.upper() in checking_array:
+            valid = 1
+        else:
+            old_name = input("Fish doesn't exist. Please try again: ")
+
+    valid = 0
+    f_name = input("Enter New Fish Name: ")
+    while valid == 0:
+        if f_name.isalpha():
+            valid = 1
+        else:
+            f_name = input("Invalid name. Please enter a valid fish name: ")
+
+    valid = 0
+    f_price = input("Enter New Fish Price: ")
+    while valid == 0:
+        if f_price.isdigit() and " " not in f_price:
+            valid = 1
+        else:
+            f_price = input("Please enter a valid fish price: ")
+
+    valid = 0
+    # This is used to display the menu of location options correctly with no hanging comma
+    input_text = ""
+    for idloc, location in LOCATIONS_CONST:
+        input_text += str(idloc) + "." + location
+        if int(idloc) < len(LOCATIONS_CONST):
+            input_text += ", "
+        else:
+            input_text += ": "
+
+    f_location = input(input_text)
+
+    while valid == 0:
+        location_index = [item
+                          for item in LOCATIONS_CONST
+                          if item[0] == f_location or item[1].upper() == f_location.upper()]
+
+        if not location_index == []:
+            f_location = location_index[0][1]
+            valid = 1
+        else:
+            f_location = input("Please enter a valid location as either " + input_text)
+
+    # Since all previous checks have been valid then edit fish
+    edit_fish(old_name,f_name,f_price,f_location)
+
+
+# Edits fish in file by taking fish_name and new values from user input and recreating the file.
+# Assumes validation completed
+def edit_fish(fish_name, new_name, new_price, new_location):
+    fish_array = get_all_fish()
+    print(fish_array)
+    for fish in fish_array:
+        if fish[0].upper() == fish_name.upper():
+            fish[0] = new_name
+            fish[1] = new_price
+            fish[2] = new_location
+            break
+
+    print(fish_array)
+
+    # Writes to file using updated array of fish
+    arr_length = len(fish_array)
+    with open('fishfile.csv', 'w') as a:
+        a.write("Name,Price,Location\n")
+        for i in range(0, arr_length):
+            a.write(fish_array[i][0] + ',' + str(fish_array[i][1]) + ',' + fish_array[i][2])
             a.write('\n')
 
 
