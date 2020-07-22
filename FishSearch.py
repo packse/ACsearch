@@ -1,7 +1,7 @@
 import csv
 import curses
 #Todo
-# Option to Delete/Edit Fish
+# Option to Edit Fish
 # Can calculate multiple fish to get a sum of all fish for selling
 # Better interface using Curses (List all fish nicely in grid like format)
 #
@@ -10,7 +10,6 @@ LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"),("4", "Pier")]
 
 def main():
     # Curses stuff
-
 
     if __name__ == '__main__':
         while 1:
@@ -22,10 +21,10 @@ def main():
                 add_fish()
                 break
             elif selection == '3':
-                print(numbered_printable())
+                print(print_fish())
                 break
             elif selection == '4':
-                print(numbered_printable())
+                delete_text_menu()
                 break
             else:
                 print("Invalid Input")
@@ -129,7 +128,47 @@ def find_fish():
             print("No Fish with that name")
 
 
-def numbered_printable():
+# Text based delete menu
+def delete_text_menu():
+    valid = 0
+    print(print_fish())
+    fish_array = get_all_fish()
+    # Loops until a valid fish is deleted
+    while valid == 0:
+        fish_name = input("Enter the name of the fish you wish to delete: ")
+        # Checks if the fish exists in the file using the name given
+        for fish in fish_array:
+            if fish[0].upper() == fish_name.upper():
+                valid = 1
+                break
+        # If valid run the delete code and loop will complete
+        if valid:
+            delete_fish(fish_name)
+            print("Fish was deleted successfully")
+        else:
+            print("Fish by that name does not exist")
+
+
+# Delete Command
+# Deletes fish from file by taking fish_name from user input and recreating the file. Assumes validation completed
+def delete_fish(fish_name):
+    fish_array_cur = get_all_fish()
+    fish_array_new = []
+    # Creates array of all existing fish except fish to be removed
+    for fish in fish_array_cur:
+        if fish[0].upper() != fish_name.upper():
+            fish_array_new.append(fish)
+
+    # Writes to file using updated array of fish
+    arr_length = len(fish_array_new)
+    with open('fishfile.csv','w') as a:
+        a.write("Name,Price,Location\n")
+        for i in range (0, arr_length):
+            a.write(fish_array_new[i][0] + ',' + str(fish_array_new[i][1]) + ',' + fish_array_new[i][2])
+            a.write('\n')
+
+
+def print_fish():
     fish_array = get_all_fish()
     fish_text = ""
     for idx, list in enumerate(fish_array):
