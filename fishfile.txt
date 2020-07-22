@@ -1,0 +1,3 @@
+Dorado, 15000, River
+Sweetfish, 900, River
+Pufferfish, 250, Sea
