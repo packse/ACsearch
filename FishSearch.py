@@ -3,7 +3,8 @@ import curses
 #Todo
 # Can calculate multiple fish to get a sum of all fish for selling
 # Better interface using Curses (List all fish nicely in grid like format)
-# Make use of objects better by translating the arrays received into the object format
+# For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
+# more attributes are added to the class which would result in more exponential growth of coding
 
 LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"),("4", "Pier")]
 
@@ -51,10 +52,9 @@ def add_all_fish(fish_arr):
 # Text based add menu inputting from user to create a fish in order to be added
 def add_fish():
     valid = 0
-    fish_array = get_fish_array()
-    # Only includes names of fish into array due to [0] and converts them all to uppercase to check against them later
-    # for duplicate entries
-    checking_array = [fish[0].upper() for fish in fish_array]
+    fish_array = get_fish_objects()
+    # An array of fish names in uppercase to check against them later to prevent duplicate additions
+    checking_array = [fish.name.upper() for fish in fish_array]
     print(print_fish())
     f_name = input("Enter Fish Name: ")
     while valid == 0:
@@ -133,7 +133,7 @@ def get_fish_objects():
 
 # Searches for a fish based on user input and can search using only the start of the name
 def find_fish():
-    fish_array = get_fish_array()
+    fish_array = get_fish_objects()
     fish_search = 1
     while not fish_search == "0":
         fish_found = 0
@@ -141,8 +141,8 @@ def find_fish():
         print("Search Results:")
         print("----------------------------------------------------------------")
         for fish in fish_array:
-            if fish[0].upper().startswith(fish_search.upper()):
-                print(fish[0] + " | Price: " + "{:,}".format(int(fish[1])) + " | Location: " + fish[2])
+            if fish. upper().startswith(fish_search.upper()):
+                print(fish.name + " | Price: " + "{:,}".format(int(fish.price)) + " | Location: " + fish.location)
                 fish_found = 1
         if fish_found == 0:
             print("No Fish with that name")
@@ -152,13 +152,13 @@ def find_fish():
 def delete_text_menu():
     valid = 0
     print(print_fish())
-    fish_array = get_fish_array()
+    fish_array = get_fish_objects()
     # Loops until a valid fish is deleted
     while valid == 0:
         fish_name = input("Enter the name of the fish you wish to delete: ")
         # Checks if the fish exists in the file using the name given
         for fish in fish_array:
-            if fish[0].upper() == fish_name.upper():
+            if fish.name.upper() == fish_name.upper():
                 valid = 1
                 break
         # If valid run the delete code and loop will complete
@@ -172,11 +172,11 @@ def delete_text_menu():
 # Delete Command
 # Deletes fish from file by taking fish_name from user input and recreating the file. Assumes validation completed
 def delete_fish(fish_name):
-    fish_array_cur = get_fish_array()
+    fish_array_cur = get_fish_objects()
     fish_array_new = []
     # Creates array of all existing fish except fish to be removed
     for fish in fish_array_cur:
-        if fish[0].upper() != fish_name.upper():
+        if fish.name.upper() != fish_name.upper():
             fish_array_new.append(fish)
 
     # Writes to file using updated array of fish
@@ -184,14 +184,14 @@ def delete_fish(fish_name):
     with open('fishfile.csv','w') as a:
         a.write("Name,Price,Location\n")
         for i in range (0, arr_length):
-            a.write(fish_array_new[i][0] + ',' + str(fish_array_new[i][1]) + ',' + fish_array_new[i][2])
+            a.write(fish_array_new[i].name + ',' + str(fish_array_new[i].price) + ',' + fish_array_new[i].location)
             a.write('\n')
 
 
 # Text based edit menu for selecting a fish and editing their values
 def edit_text_menu():
-    fish_array = get_fish_array()
-    checking_array = [fish[0].upper() for fish in fish_array]
+    fish_array = get_fish_objects()
+    checking_array = [fish.name.upper() for fish in fish_array]
     valid = 0
     print(print_fish())
     old_name = input("Please enter the name of the fish you wish to change: ")
@@ -204,8 +204,9 @@ def edit_text_menu():
     valid = 0
     f_name = input("Enter New Fish Name: ")
     while valid == 0:
-        # Unlike creating a new fish it is valid to keep the same name as long as it is the name of the old fish
-        if f_name.isalpha():
+        # Checks that only letters are in name and that the new name does not match the name of other fish as long as
+        # it matches the name of the fish to be edited
+        if (f_name.isalpha()) and ((f_name.upper() not in checking_array) or f_name.upper() == old_name.upper()):
             valid = 1
         else:
             f_name = input("Invalid name. Please enter a valid fish name: ")
@@ -248,23 +249,20 @@ def edit_text_menu():
 # Edits fish in file by taking fish_name and new values from user input and recreating the file.
 # Assumes validation completed
 def edit_fish(fish_name, new_name, new_price, new_location):
-    fish_array = get_fish_array()
-    print(fish_array)
+    fish_array = get_fish_objects()
     for fish in fish_array:
-        if fish[0].upper() == fish_name.upper():
-            fish[0] = new_name
-            fish[1] = new_price
-            fish[2] = new_location
+        if fish.name.upper() == fish_name.upper():
+            fish.name = new_name
+            fish.price = new_price
+            fish.location = new_location
             break
-
-    print(fish_array)
 
     # Writes to file using updated array of fish
     arr_length = len(fish_array)
     with open('fishfile.csv', 'w') as a:
         a.write("Name,Price,Location\n")
         for i in range(0, arr_length):
-            a.write(fish_array[i][0] + ',' + str(fish_array[i][1]) + ',' + fish_array[i][2])
+            a.write(fish_array[i].name + ',' + str(fish_array[i].price) + ',' + fish_array[i].location)
             a.write('\n')
 
 
@@ -301,6 +299,7 @@ f1 = Fish('Dorado', 15000, 'River')
 f2 = Fish('Sweetfish', 900, 'River')
 f3 = Fish('Pufferfish', 250, 'Sea')
 fish_test_array = [f1, f2, f3]
-f4 = Fish('Crucian Carp', 120, 'River')
+f4 = Fish('Crucian Carp', 120, 'River').__getattribute__("name")
+print(f4)
 get_fish_objects()
 main()
