@@ -1,7 +1,5 @@
 import csv
-import curses
 #Todo
-# Better interface using Curses (List all fish nicely in grid like format)
 # For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
 # more attributes are added to the class which would result in more exponential growth of coding
 
