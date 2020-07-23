@@ -6,7 +6,7 @@ import curses
 # For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
 # more attributes are added to the class which would result in more exponential growth of coding
 
-LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"),("4", "Pier")]
+LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"), ("4", "Pier")]
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
 
     if __name__ == '__main__':
         while 1:
-            selection = input("Select an Option:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish\n5.Edit Fish\n")
+            selection = input("Select:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish\n5.Edit Fish\n")
             if selection == '1':
                 find_fish()
                 break
@@ -40,14 +40,16 @@ class Fish:
         self.price = price
         self.location = location
 
+
 # Method used primarily for testing
 def add_all_fish(fish_arr):
     arr_length = len(fish_arr)
-    with open('testfile.csv','w') as a:
+    with open('testfile.csv', 'w') as a:
         a.write("Name,Price,Location\n")
-        for i in range (0, arr_length):
+        for i in range(0, arr_length):
             a.write(fish_arr[i].name + ',' + str(fish_arr[i].price) + ',' + fish_arr[i].location)
             a.write('\n')
+
 
 # Text based add menu inputting from user to create a fish in order to be added
 def add_fish():
@@ -116,7 +118,7 @@ def write_fish(fish_obj):
 
 # Gets the csv file of all fish in 2d array format
 def get_fish_array():
-    with open('fishfile.csv','r') as csvfile:
+    with open('fishfile.csv', 'r') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         next(csvreader)
         fish_array = list(csvreader)
@@ -131,6 +133,7 @@ def get_fish_objects():
         fish_objects.append(Fish(fish[0], fish[1], fish[2]))
     return fish_objects
 
+
 # Searches for a fish based on user input and can search using only the start of the name
 def find_fish():
     fish_array = get_fish_objects()
@@ -141,7 +144,7 @@ def find_fish():
         print("Search Results:")
         print("----------------------------------------------------------------")
         for fish in fish_array:
-            if fish. upper().startswith(fish_search.upper()):
+            if fish.name.upper().startswith(fish_search.upper()):
                 print(fish.name + " | Price: " + "{:,}".format(int(fish.price)) + " | Location: " + fish.location)
                 fish_found = 1
         if fish_found == 0:
@@ -181,9 +184,9 @@ def delete_fish(fish_name):
 
     # Writes to file using updated array of fish
     arr_length = len(fish_array_new)
-    with open('fishfile.csv','w') as a:
+    with open('fishfile.csv', 'w') as a:
         a.write("Name,Price,Location\n")
-        for i in range (0, arr_length):
+        for i in range(0, arr_length):
             a.write(fish_array_new[i].name + ',' + str(fish_array_new[i].price) + ',' + fish_array_new[i].location)
             a.write('\n')
 
@@ -243,7 +246,7 @@ def edit_text_menu():
             f_location = input("Please enter a valid location as either " + input_text)
 
     # Since all previous checks have been valid then edit fish
-    edit_fish(old_name,f_name,f_price,f_location)
+    edit_fish(old_name, f_name, f_price, f_location)
 
 
 # Edits fish in file by taking fish_name and new values from user input and recreating the file.
@@ -273,14 +276,14 @@ def sum_fish(fish_sum_array):
     # Want to display all of the fish chosen with their prices and the total profit at the bottom
 
 
-#Prints out all of the fish in a nice format
+# Prints out all of the fish in a nice format
 def print_fish():
     fish_array = get_fish_array()
     fish_text = ""
-    for idx, list in enumerate(fish_array):
+    for idx, listed in enumerate(fish_array):
         fish_text += str(idx+1) + ". "
         counter = 0
-        for data in list:
+        for data in listed:
             if counter == 0:
                 fish_text += "Name: "
                 fish_text += data + " | "
@@ -292,7 +295,7 @@ def print_fish():
                 fish_text += data
             counter += +1
         fish_text += "\n"
-    return(fish_text)
+    return fish_text
 
 
 f1 = Fish('Dorado', 15000, 'River')
