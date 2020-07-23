@@ -1,7 +1,6 @@
 import csv
 import curses
 #Todo
-# Can calculate multiple fish to get a sum of all fish for selling
 # Better interface using Curses (List all fish nicely in grid like format)
 # For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
 # more attributes are added to the class which would result in more exponential growth of coding
@@ -14,7 +13,8 @@ def main():
 
     if __name__ == '__main__':
         while 1:
-            selection = input("Select:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish\n5.Edit Fish\n")
+            selection = input("Select an option:\n1.Find Fish\n2.Add Fish\n3.Show All Fish\n4.Delete Fish"
+                              "\n5.Edit Fish\n6.Sum Fish\n")
             if selection == '1':
                 find_fish()
                 break
@@ -29,6 +29,9 @@ def main():
                 break
             elif selection == '5':
                 edit_text_menu()
+                break
+            elif selection == '6':
+                select_fish()
                 break
             else:
                 print("Invalid Input")
@@ -269,11 +272,54 @@ def edit_fish(fish_name, new_name, new_price, new_location):
             a.write('\n')
 
 
-# Sums together the values of multiple fish to get a total
-def sum_fish(fish_sum_array):
-    print("PLACEHOLDER")
-    # Receives the prices of selected fish through an array and sums them together to get the total value
-    # Want to display all of the fish chosen with their prices and the total profit at the bottom
+# Sums together the price of fish using a numeric array of values and returns total profit
+def sum_fish(fish_prices):
+    total_profit = 0
+    for prices in fish_prices:
+        total_profit += int(prices)
+
+    return total_profit
+
+
+# Text based function to allow user to select which fish to add for summing the total amount of fish
+def select_fish():
+    fish_array = get_fish_objects()
+    print(print_fish())
+    finished = 0
+    fish_name = input("Choose which fish to sum together: ")
+    fish_selected_array = []
+    # Continue looping until user has finished choosing all fish they wish to sum
+    while finished == 0:
+        valid = 0
+        while valid == 0:
+            for fish in fish_array:
+                if fish_name.upper() == fish.name.upper():
+                    valid = 1
+                    fish_selected_array.append(fish)
+            if valid == 0:
+                fish_name = input("Fish doesn't exist. Please try again: ")
+
+        print("Current Fish:")
+        for i in range(0, len(fish_selected_array)):
+            print(fish_selected_array[i].name)
+
+        fish_name = input("Add another fish (Type 0 if finished): ")
+        if fish_name == '0':
+            finished = 1
+
+    sum_display(fish_selected_array)
+
+
+# Displays all fish that were part of the calculation along with the total profit
+def sum_display(fish_array):
+    # Test array used. In practice they should be able to choose which fish/how many of that fish, etc
+    # Gets only the prices of the fish from the array
+    fish_prices = [fish.price for fish in fish_array]
+    total_profit = sum_fish(fish_prices)
+    print("---------------------------------------------\nFish List")
+    for fish in fish_array:
+        print(fish.name + " " + fish.price)
+    print("---------------------------------------------\nTotal Profit: " + str(total_profit))
 
 
 # Prints out all of the fish in a nice format
@@ -303,6 +349,5 @@ f2 = Fish('Sweetfish', 900, 'River')
 f3 = Fish('Pufferfish', 250, 'Sea')
 fish_test_array = [f1, f2, f3]
 f4 = Fish('Crucian Carp', 120, 'River').__getattribute__("name")
-print(f4)
 get_fish_objects()
 main()
