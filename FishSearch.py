@@ -1,10 +1,10 @@
 import csv
 import curses
 #Todo
-# Option to Edit Fish
 # Can calculate multiple fish to get a sum of all fish for selling
 # Better interface using Curses (List all fish nicely in grid like format)
-#
+# Make use of objects better by translating the arrays received into the object format
+
 LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"),("4", "Pier")]
 
 
@@ -31,7 +31,6 @@ def main():
                 break
             else:
                 print("Invalid Input")
-        #Add in checking with else and while loop
 
 
 class Fish:
@@ -40,7 +39,7 @@ class Fish:
         self.price = price
         self.location = location
 
-
+# Method used primarily for testing
 def add_all_fish(fish_arr):
     arr_length = len(fish_arr)
     with open('testfile.csv','w') as a:
@@ -49,10 +48,10 @@ def add_all_fish(fish_arr):
             a.write(fish_arr[i].name + ',' + str(fish_arr[i].price) + ',' + fish_arr[i].location)
             a.write('\n')
 
-
+# Text based add menu inputting from user to create a fish in order to be added
 def add_fish():
     valid = 0
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     # Only includes names of fish into array due to [0] and converts them all to uppercase to check against them later
     # for duplicate entries
     checking_array = [fish[0].upper() for fish in fish_array]
@@ -106,6 +105,8 @@ def add_fish():
         add_fish()
 
 
+# Code to add a fish to the csv file
+# Assumes completed validation
 def write_fish(fish_obj):
     with open('fishfile.csv', 'a') as a:
         a.write(fish_obj.name + ',' + str(fish_obj.price) + ',' + fish_obj.location)
@@ -113,16 +114,26 @@ def write_fish(fish_obj):
     return 1
 
 
-def get_all_fish():
+# Gets the csv file of all fish in 2d array format
+def get_fish_array():
     with open('fishfile.csv','r') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         next(csvreader)
-        fish_list = list(csvreader)
-    return fish_list
+        fish_array = list(csvreader)
+    return fish_array
 
 
+# Translates fish array into the object counterpart and returns an array of objects
+def get_fish_objects():
+    fish_array = get_fish_array()
+    fish_objects = []
+    for fish in fish_array:
+        fish_objects.append(Fish(fish[0], fish[1], fish[2]))
+    return fish_objects
+
+# Searches for a fish based on user input and can search using only the start of the name
 def find_fish():
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     fish_search = 1
     while not fish_search == "0":
         fish_found = 0
@@ -141,7 +152,7 @@ def find_fish():
 def delete_text_menu():
     valid = 0
     print(print_fish())
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     # Loops until a valid fish is deleted
     while valid == 0:
         fish_name = input("Enter the name of the fish you wish to delete: ")
@@ -161,7 +172,7 @@ def delete_text_menu():
 # Delete Command
 # Deletes fish from file by taking fish_name from user input and recreating the file. Assumes validation completed
 def delete_fish(fish_name):
-    fish_array_cur = get_all_fish()
+    fish_array_cur = get_fish_array()
     fish_array_new = []
     # Creates array of all existing fish except fish to be removed
     for fish in fish_array_cur:
@@ -177,8 +188,9 @@ def delete_fish(fish_name):
             a.write('\n')
 
 
+# Text based edit menu for selecting a fish and editing their values
 def edit_text_menu():
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     checking_array = [fish[0].upper() for fish in fish_array]
     valid = 0
     print(print_fish())
@@ -192,6 +204,7 @@ def edit_text_menu():
     valid = 0
     f_name = input("Enter New Fish Name: ")
     while valid == 0:
+        # Unlike creating a new fish it is valid to keep the same name as long as it is the name of the old fish
         if f_name.isalpha():
             valid = 1
         else:
@@ -235,7 +248,7 @@ def edit_text_menu():
 # Edits fish in file by taking fish_name and new values from user input and recreating the file.
 # Assumes validation completed
 def edit_fish(fish_name, new_name, new_price, new_location):
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     print(fish_array)
     for fish in fish_array:
         if fish[0].upper() == fish_name.upper():
@@ -255,8 +268,16 @@ def edit_fish(fish_name, new_name, new_price, new_location):
             a.write('\n')
 
 
+# Sums together the values of multiple fish to get a total
+def sum_fish(fish_sum_array):
+    print("PLACEHOLDER")
+    # Receives the prices of selected fish through an array and sums them together to get the total value
+    # Want to display all of the fish chosen with their prices and the total profit at the bottom
+
+
+#Prints out all of the fish in a nice format
 def print_fish():
-    fish_array = get_all_fish()
+    fish_array = get_fish_array()
     fish_text = ""
     for idx, list in enumerate(fish_array):
         fish_text += str(idx+1) + ". "
@@ -275,9 +296,11 @@ def print_fish():
         fish_text += "\n"
     return(fish_text)
 
+
 f1 = Fish('Dorado', 15000, 'River')
 f2 = Fish('Sweetfish', 900, 'River')
 f3 = Fish('Pufferfish', 250, 'Sea')
 fish_test_array = [f1, f2, f3]
 f4 = Fish('Crucian Carp', 120, 'River')
+get_fish_objects()
 main()
