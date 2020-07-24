@@ -2,6 +2,8 @@ import csv
 #Todo
 # For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
 # more attributes are added to the class which would result in more exponential growth of coding
+# Create Set Methods in order to have some level of prior validation
+# Create specific validation functions
 
 LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"), ("4", "Pier")]
 
@@ -37,9 +39,38 @@ def main():
 
 class Fish:
     def __init__(self, name, price, location):
-        self.name = name
-        self.price = price
-        self.location = location
+        # Must prefix attribute with _ otherwise you get a recursion problem
+        self._name = name
+        self._price = price
+        self._location = location
+
+    @property
+    def name(self):
+        return self.name
+
+    @name.setter
+    def name(self, new_name):
+        if new_name.isalpha() and not " ":
+            self.name = new_name
+
+    @property
+    def price(self):
+        return self.price
+
+    @price.setter
+    def price(self, new_price):
+        if int(new_price) and " " not in new_price:
+            self.price = new_price
+
+    @property
+    def location(self):
+        return self.location
+
+    @location.setter
+    def location(self, new_location):
+        # Checking if the set location of the fish is in LOCATIONS_CONST variable
+        if new_location in [locations[1] for locations in LOCATIONS_CONST]:
+            self.location = new_location
 
 
 # Method used primarily for testing
@@ -346,6 +377,9 @@ f1 = Fish('Dorado', 15000, 'River')
 f2 = Fish('Sweetfish', 900, 'River')
 f3 = Fish('Pufferfish', 250, 'Sea')
 fish_test_array = [f1, f2, f3]
-f4 = Fish('Crucian Carp', 120, 'River').__getattribute__("name")
+text = "River"
+if(text in [locations[1] for locations in LOCATIONS_CONST]):
+    print("YEP")
+
 get_fish_objects()
 main()
