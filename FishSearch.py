@@ -2,14 +2,11 @@ import csv
 #Todo
 # For more extensibility make use of fish.__getattribute("name") rather than fish.name so an array can be used in case
 # more attributes are added to the class which would result in more exponential growth of coding
-# Create Set Methods in order to have some level of prior validation
-# Create specific validation functions
 
 LOCATIONS_CONST = [("1", 'River'), ("2", "Sea"), ("3", "Pond"), ("4", "Pier")]
 
 
 def main():
-    # Curses stuff
 
     if __name__ == '__main__':
         while 1:
@@ -22,7 +19,7 @@ def main():
                 add_fish()
                 break
             elif selection == '3':
-                print(print_fish())
+                print_fish()
                 break
             elif selection == '4':
                 delete_text_menu()
@@ -38,39 +35,40 @@ def main():
 
 
 class Fish:
-    def __init__(self, name, price, location):
-        # Must prefix attribute with _ otherwise you get a recursion problem
+
+    def __init__(self, name=None, price=None, location=None):
+        # Must use a different name for the attribute otherwise you get a recursion problem when using the setters
         self._name = name
         self._price = price
         self._location = location
 
     @property
     def name(self):
-        return self.name
+        return self._name
 
     @name.setter
     def name(self, new_name):
-        if new_name.isalpha() and not " ":
-            self.name = new_name
+        if new_name.isalpha() and not new_name.isspace():
+            self._name = new_name
 
     @property
     def price(self):
-        return self.price
+        return self._price
 
     @price.setter
     def price(self, new_price):
-        if int(new_price) and " " not in new_price:
-            self.price = new_price
+        if new_price.isdigit() and " " not in new_price and int(new_price) >= 0:
+            self._price = new_price
 
     @property
     def location(self):
-        return self.location
+        return self._location
 
     @location.setter
     def location(self, new_location):
         # Checking if the set location of the fish is in LOCATIONS_CONST variable
         if new_location in [locations[1] for locations in LOCATIONS_CONST]:
-            self.location = new_location
+            self._location = new_location
 
 
 # Method used primarily for testing
@@ -85,51 +83,39 @@ def add_all_fish(fish_arr):
 
 # Text based add menu inputting from user to create a fish in order to be added
 def add_fish():
-    valid = 0
+    # Retrieves all fish in  from the most current file
     fish_array = get_fish_objects()
+    new_fish = Fish()
     # An array of fish names in uppercase to check against them later to prevent duplicate additions
     checking_array = [fish.name.upper() for fish in fish_array]
-    print(print_fish())
+    print_fish()
     f_name = input("Enter Fish Name: ")
-    while valid == 0:
-        # Checks for digits in name or duplicate names
-        if (f_name.isalpha()) and (f_name.upper() not in checking_array):
-            valid = 1
-        else:
+    while new_fish.name is None:
+        # Checks for duplicate names
+        if f_name.upper() not in checking_array:
+            new_fish.name = f_name
+        # Checks that validation in the setter was successful resulting in a name being set
+        if new_fish.name is None:
             f_name = input("Fish either exists or invalid name. Please enter a valid fish name: ")
 
-    valid = 0
     f_price = input("Enter Fish Price: ")
-    while valid == 0:
-        if f_price.isdigit() and " " not in f_price:
-            valid = 1
-        else:
+    while new_fish.price is None:
+        new_fish.price = f_price
+        if new_fish.price is None:
             f_price = input("Please enter a valid fish price: ")
 
-    valid = 0
     # This section is used to display the menu of location options correctly with no hanging comma
-    input_text = ""
-    for idloc, location in LOCATIONS_CONST:
-        input_text += str(idloc) + "." + location
-        if int(idloc) < len(LOCATIONS_CONST):
-            input_text += ", "
-        else:
-            input_text += ": "
+
+    input_text = locations_text()
 
     f_location = input(input_text)
 
-    while valid == 0:
-        location_index = [item
-                          for item in LOCATIONS_CONST
-                          if item[0] == f_location or item[1].upper() == f_location.upper()]
-
-        if not location_index == []:
-            f_location = location_index[0][1]
-            valid = 1
-        else:
+    while new_fish.location is None:
+        new_fish.location = f_location
+        if new_fish.location is None:
             f_location = input("Please enter a valid location as either " + input_text)
 
-    if write_fish(Fish(f_name, f_price, f_location)):
+    if write_fish(new_fish):
         print("----------------------------------------------------------------")
         print("Fish Added Successfully ")
         print("----------------------------------------------------------------")
@@ -186,7 +172,7 @@ def find_fish():
 # Text based delete menu
 def delete_text_menu():
     valid = 0
-    print(print_fish())
+    print_fish()
     fish_array = get_fish_objects()
     # Loops until a valid fish is deleted
     while valid == 0:
@@ -227,8 +213,9 @@ def delete_fish(fish_name):
 def edit_text_menu():
     fish_array = get_fish_objects()
     checking_array = [fish.name.upper() for fish in fish_array]
+    chosen_fish = Fish()
     valid = 0
-    print(print_fish())
+    print_fish()
     old_name = input("Please enter the name of the fish you wish to change: ")
     while valid == 0:
         if old_name.upper() in checking_array:
@@ -236,45 +223,30 @@ def edit_text_menu():
         else:
             old_name = input("Fish doesn't exist. Please try again: ")
 
-    valid = 0
     f_name = input("Enter New Fish Name: ")
-    while valid == 0:
-        # Checks that only letters are in name and that the new name does not match the name of other fish as long as
-        # it matches the name of the fish to be edited
-        if (f_name.isalpha()) and ((f_name.upper() not in checking_array) or f_name.upper() == old_name.upper()):
-            valid = 1
-        else:
-            f_name = input("Invalid name. Please enter a valid fish name: ")
+    while chosen_fish.name is None:
+        # Checks that the same name is valid as long as it does not match the name of other fish as long as
+        if f_name.upper() not in checking_array or f_name.upper() == old_name.upper():
+            chosen_fish.name = f_name
+        # If chosen fish name is still none then some error must have occured during setter validation
+        if(chosen_fish.name is None):
+            f_name = input("Fish either exists or invalid name. Please enter a valid fish name: ")
 
-    valid = 0
     f_price = input("Enter New Fish Price: ")
-    while valid == 0:
-        if f_price.isdigit() and " " not in f_price:
-            valid = 1
-        else:
+    while chosen_fish.price is None:
+        chosen_fish.price = f_price
+        # Only validation required is performed in the setter
+        if chosen_fish.price is None:
             f_price = input("Please enter a valid fish price: ")
 
-    valid = 0
-    # This is used to display the menu of location options correctly with no hanging comma
-    input_text = ""
-    for idloc, location in LOCATIONS_CONST:
-        input_text += str(idloc) + "." + location
-        if int(idloc) < len(LOCATIONS_CONST):
-            input_text += ", "
-        else:
-            input_text += ": "
+    input_text = locations_text()
 
     f_location = input(input_text)
 
-    while valid == 0:
-        location_index = [item
-                          for item in LOCATIONS_CONST
-                          if item[0] == f_location or item[1].upper() == f_location.upper()]
-
-        if not location_index == []:
-            f_location = location_index[0][1]
-            valid = 1
-        else:
+    while chosen_fish.location is None:
+        chosen_fish.location = f_location
+        # Only validation required is performed in the setter
+        if chosen_fish.location is None:
             f_location = input("Please enter a valid location as either " + input_text)
 
     # Since all previous checks have been valid then edit fish
@@ -313,7 +285,7 @@ def sum_fish(fish_prices):
 # Text based function to allow user to select which fish to add for summing the total amount of fish
 def select_fish():
     fish_array = get_fish_objects()
-    print(print_fish())
+    print_fish()
     finished = 0
     fish_name = input("Choose which fish to sum together: ")
     fish_selected_array = []
@@ -370,16 +342,24 @@ def print_fish():
                 fish_text += data
             counter += +1
         fish_text += "\n"
-    return fish_text
+    print(fish_text)
+
+
+# Used to print out all locations in the proper format (No trailing comma)
+def locations_text():
+    text = ""
+    for idloc, location in LOCATIONS_CONST:
+        text += str(idloc) + "." + location
+        if int(idloc) < len(LOCATIONS_CONST):
+            text += ", "
+        else:
+            text += ": "
+    return text
 
 
 f1 = Fish('Dorado', 15000, 'River')
 f2 = Fish('Sweetfish', 900, 'River')
 f3 = Fish('Pufferfish', 250, 'Sea')
 fish_test_array = [f1, f2, f3]
-text = "River"
-if(text in [locations[1] for locations in LOCATIONS_CONST]):
-    print("YEP")
-
 get_fish_objects()
 main()
