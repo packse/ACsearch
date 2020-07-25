@@ -11,3 +11,22 @@ else:
 
 #     print(array[0].index("2"))
 
+
+# Wrapper performs the functions in here as well as other fixes to prevent issues when returning to the normal terminal
+def what_wrapper_does():
+    # Initialises the screen
+    stdscr = curses.initscr()
+
+    # Used to turn off the echoing(printing) of keys so that you read keys and only display them when you let them
+    curses.noecho()
+    # Allows the program to react to key presses instantly without needing to click enter
+    curses.cbreak()
+    # Allows usage of the keypad
+    stdscr.keypad(True)
+
+    # Should be run before the  program is terminated to reset the options
+    curses.nocbreak()
+    stdscr.keypad(False)
+    curses.echo()
+    # This terminates curses and returns the terminal to its normal operating mode
+    curses.endwin()
