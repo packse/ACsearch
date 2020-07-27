@@ -19,6 +19,8 @@ import FishSearch as fs
 
 
 
+
+
 def main(stdscr):
     startup(stdscr)
     start_menu(stdscr)
@@ -36,15 +38,6 @@ def header_scr_setup(stdscr):
     # Refreshes the screen. Must be called each time a new event needs to be rendered
     headerscr.refresh()
     return headerscr
-
-
-# Determines which menu type/keyboard type will be used and passes it relevant information. Returns selected row
-def menu_controller(scr, menu_items, header_text=""):
-    selected_row = 0
-    while 1:
-        if 1:
-            return centered_menu_ud(scr, menu_items, selected_row, header_text)
-
 
 
 # Returns the currently selected row and the key pressed as a tuple
@@ -92,12 +85,61 @@ def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
             return selected_row
 
 
+def fish_menu(stdscr, leftscr, selected_row):
+    fish_array = fs.get_fish_objects()
+    while 1:
+        # The fish currently being shown on the screen
+        fish_displayed = []
+        maxh, maxw = leftscr.getmaxyx()
+        # The last row that text can be placed in
+        ending_row = maxh - 1
+        # The size of each row window
+        row_scr_height = 1
+        row_scr_width = maxw - 2
 
+        # Start coordinate of the heading section of the lcsreen
+        heading_start_y = 2
+        heading_start_x = 1
+        heading_row = curses.newwin(row_scr_height, row_scr_width, heading_start_y, heading_start_x)
+
+        # x positions that the text on the screen starts at
+        name_pos = 0
+        price_pos = row_scr_width//2
+        location_pos = row_scr_width - row_scr_width//4
+
+        # Each row has a height of 1 so row_y is always 0
+        row_y = 0
+
+        heading_row.addstr(0, name_pos, "Name", curses.A_BOLD)
+        heading_row.addstr(0, price_pos, "Price", curses.A_BOLD)
+        heading_row.addstr(0, location_pos, "Location", curses.A_BOLD)
+        heading_row.refresh()
+
+        for idx, row in enumerate(fish_array):
+            # The position the new window starts getting created from
+            start_y = 3 + idx
+            start_x = 1
+            # Only adds next row if it won't overflow off screen
+            if start_y < ending_row:
+                # Creates a new window that will store a row's worth of fish data including name, price, location
+                scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
+                if selected_row == idx:
+                    scr_row.bkgd(' ', curses.color_pair(1))
+
+                scr_row.addstr(row_y, name_pos, row.name)
+                scr_row.addstr(row_y, price_pos, row.price)
+                scr_row.addstr(row_y, location_pos, row.location)
+
+                scr_row.refresh()
+                fish_displayed.append([row, scr_row])
+
+        selected_row, key = keyboard_movement_ud(stdscr, fish_array, selected_row)
 
 
 # Initialisation of the primary screen
 def startup(stdscr):
     curses.curs_set(0)
+
 
 # Displays header text above the current menu
 def header_display(scr, menu_items, text):
@@ -120,7 +162,7 @@ def box_reset(scr):
 
 def start_menu(scr):
     start_menu_items = ["Calculate Profit", "Add Fish", "Delete Fish", "Edit Fish", "Exit"]
-    menu_selection = menu_controller(scr, start_menu_items, "Animal Crossing Fish Search")
+    menu_selection = centered_menu_ud(scr, start_menu_items, 0,  "Animal Crossing Fish Search")
 
     if menu_selection == 0:
         profit_menu(scr)
@@ -131,7 +173,7 @@ def start_menu(scr):
 def exit_menu(scr):
     exit_menu_items = ["Yes", "No"]
     box_reset(scr)
-    menu_selection = menu_controller(scr, exit_menu_items, "Are you sure you want to quit?")
+    menu_selection = centered_menu_ud(scr, exit_menu_items, 0, "Are you sure you want to quit?")
     if menu_selection == 0:
         curses.endwin()
     else:
@@ -143,13 +185,11 @@ def profit_menu(scr):
     # Draws the left and right side screens
     lscreen = lhalf_box_draw(scr)
     rscreen = rhalf_box_draw(scr)
-    scr.addstr("WOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW")
-    lscreen.addstr("HEYEEYEYEYE")
-    rscreen.addstr("YOYOYOYOOYOYYYO")
+    fish_menu(scr, lscreen, 0)
     scr.refresh()
     lscreen.refresh()
     rscreen.refresh()
-    scr.getch()
+
 
 def lhalf_box_draw(scr):
     y, x = scr.getmaxyx()
