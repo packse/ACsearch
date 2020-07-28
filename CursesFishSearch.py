@@ -11,6 +11,11 @@ import FishSearch as fs
 # Periodically check for resize issues where you will need to clear and refresh the screen to fit correctly
 # Resize error needs to be handled either by exception or using the os library to resize the terminal before crash
 
+
+# Fish_menu needs to be split into different functions. This includes the filling of the left and right windows with
+# header data more than just the boxes. The highlighting of fish and up/down keyboard only being present in the window
+# currently being used.
+
 # Outline
 # Program should work primarily with keyboard controls, using arrow keys and enter to move between different selections
 # and letters to for use in the search bar. For screens that use it search should be dynamic and enter shouldn't need
@@ -44,17 +49,11 @@ def header_scr_setup(stdscr):
 def keyboard_movement_ud(scr, menu_items, selected_row):
     while 1:
         key = scr.getch()
-        if key == curses.KEY_UP and selected_row > 0:
+        if key == curses.KEY_UP:
             selected_row -= 1
             return selected_row, key
-        elif key == curses.KEY_UP and selected_row == 0:
-            selected_row = len(menu_items) - 1
-            return selected_row, key
-        elif key == curses.KEY_DOWN and selected_row < len(menu_items) - 1:
+        elif key == curses.KEY_DOWN:
             selected_row += 1
-            return selected_row, key
-        elif key == curses.KEY_DOWN and selected_row == len(menu_items) - 1:
-            selected_row = 0
             return selected_row, key
         elif key == curses.KEY_ENTER or key in [10, 13]:
             return selected_row, key
@@ -80,24 +79,32 @@ def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
                 scr.addstr(y, x, row, curses.color_pair(0))
 
         selected_row, key = keyboard_movement_ud(scr, menu_items, selected_row)
-
-        if key == curses.KEY_ENTER or key in [10, 13]:
+        if key == curses.KEY_UP and selected_row == -1:
+            selected_row = len(menu_items) - 1
+        elif key == curses.KEY_DOWN and selected_row == len(menu_items):
+            selected_row = 0
+        elif key == curses.KEY_ENTER or key in [10, 13]:
             return selected_row
 
 
-def fish_menu(stdscr, leftscr, selected_row):
-    fish_array = fs.get_fish_objects()
+# Returns the selected fish after pressing enter
+def fish_menu(mainscr, scr, fish_array, selected_row):
+
+    # The starting position that the fish_array will read from in the while loop. This allows for scrolling
+    fish_array_start = 0
+    # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
+    fish_array_position = 0
     while 1:
         # The fish currently being shown on the screen
         fish_displayed = []
-        maxh, maxw = leftscr.getmaxyx()
+        maxh, maxw = scr.getmaxyx()
         # The last row that text can be placed in
         ending_row = maxh - 1
         # The size of each row window
         row_scr_height = 1
         row_scr_width = maxw - 2
 
-        # Start coordinate of the heading section of the lcsreen
+        # Start coordinate of the heading section of the screen
         heading_start_y = 2
         heading_start_x = 1
         heading_row = curses.newwin(row_scr_height, row_scr_width, heading_start_y, heading_start_x)
@@ -107,7 +114,7 @@ def fish_menu(stdscr, leftscr, selected_row):
         price_pos = row_scr_width//2
         location_pos = row_scr_width - row_scr_width//4
 
-        # Each row has a height of 1 so row_y is always 0
+        # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
         row_y = 0
 
         heading_row.addstr(0, name_pos, "Name", curses.A_BOLD)
@@ -115,7 +122,7 @@ def fish_menu(stdscr, leftscr, selected_row):
         heading_row.addstr(0, location_pos, "Location", curses.A_BOLD)
         heading_row.refresh()
 
-        for idx, row in enumerate(fish_array):
+        for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
             # The position the new window starts getting created from
             start_y = 3 + idx
             start_x = 1
@@ -123,8 +130,10 @@ def fish_menu(stdscr, leftscr, selected_row):
             if start_y < ending_row:
                 # Creates a new window that will store a row's worth of fish data including name, price, location
                 scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
-                if selected_row == idx:
-                    scr_row.bkgd(' ', curses.color_pair(1))
+
+                if selected_row is not None:
+                    if selected_row == idx:
+                        scr_row.bkgd(' ', curses.color_pair(1))
 
                 scr_row.addstr(row_y, name_pos, row.name)
                 scr_row.addstr(row_y, price_pos, row.price)
@@ -133,7 +142,43 @@ def fish_menu(stdscr, leftscr, selected_row):
                 scr_row.refresh()
                 fish_displayed.append([row, scr_row])
 
-        selected_row, key = keyboard_movement_ud(stdscr, fish_array, selected_row)
+        selected_row, key = keyboard_movement_ud(mainscr, fish_array, selected_row)
+
+
+        # If the up key was pressed move up the list
+        if key == curses.KEY_UP:
+            fish_array_position -= 1
+            # For when the up key is pressed at the very start of the list which loops it back around to the end
+            if fish_array_position == -1:
+                # Set all parameters to be the end of the list
+                selected_row = len(fish_displayed) - 1
+                fish_array_start = (len(fish_array) - 1) - (len(fish_displayed) - 1)
+                fish_array_position = len(fish_array) - 1
+            # When the up key is pressed at the top of the list then scroll up
+            elif selected_row < 0 and fish_array_position != -1:
+                fish_array_start -= 1
+                # +1 to set it back to the top of the list making selected row 0
+                selected_row += 1
+
+        # If the down key was move down the list
+        if key == curses.KEY_DOWN:
+            fish_array_position += 1
+            # For when the down key is pressed at the end of the list which sets it back to the start
+            if fish_array_position > len(fish_array) - 1:
+                # Reset all parameters to be the start of the list
+                fish_array_start = 0
+                selected_row = 0
+                fish_array_position = 0
+            # When the down key is pressed at the end of the visible list then scroll down
+            elif selected_row > len(fish_displayed) - 1:
+                fish_array_start += 1
+                # -1 to have it keep highlighting the last entry in the list being len(fish_display) - 1
+                selected_row -= 1
+
+        # If the enter key is pressed copy the fish and add it to the right panel
+        if key == curses.KEY_ENTER or key in [10, 13]:
+            return fish_array[fish_array_position]
+
 
 
 # Initialisation of the primary screen
@@ -185,10 +230,12 @@ def profit_menu(scr):
     # Draws the left and right side screens
     lscreen = lhalf_box_draw(scr)
     rscreen = rhalf_box_draw(scr)
-    fish_menu(scr, lscreen, 0)
-    scr.refresh()
-    lscreen.refresh()
-    rscreen.refresh()
+
+    lscreen_fish_array = fs.get_fish_objects()
+    fish_selected = fish_menu(scr, lscreen, lscreen_fish_array, 0)
+
+
+    # if right arrow pressed go to right screen. If left arrow go left screen. Start left screen
 
 
 def lhalf_box_draw(scr):
@@ -211,9 +258,6 @@ def rhalf_box_draw(scr):
     rscreen.refresh()
 
     return rscreen
-
-
-
 
 
 # Wrapper improves and prevents some issues when running the curses terminal
