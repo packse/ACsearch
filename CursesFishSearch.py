@@ -16,6 +16,9 @@ import FishSearch as fs
 # header data more than just the boxes. The highlighting of fish and up/down keyboard only being present in the window
 # currently being used.
 
+# Split left and right screen menu filling into different functions as they do technically perform
+# different functionalities such as only name and price being required and the footer section for the right screen
+
 # Outline
 # Program should work primarily with keyboard controls, using arrow keys and enter to move between different selections
 # and letters to for use in the search bar. For screens that use it search should be dynamic and enter shouldn't need
@@ -27,7 +30,6 @@ import FishSearch as fs
 
 
 def main(stdscr):
-    startup(stdscr)
     start_menu(stdscr)
 
 # Sets up dimensions of header screen based on stdscr
@@ -46,7 +48,7 @@ def header_scr_setup(stdscr):
 
 
 # Returns the currently selected row and the key pressed as a tuple
-def keyboard_movement_ud(scr, menu_items, selected_row):
+def keyboard_movement_ud(scr, selected_row):
     while 1:
         key = scr.getch()
         if key == curses.KEY_UP:
@@ -78,7 +80,7 @@ def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
             else:
                 scr.addstr(y, x, row, curses.color_pair(0))
 
-        selected_row, key = keyboard_movement_ud(scr, menu_items, selected_row)
+        selected_row, key = keyboard_movement_ud(scr, selected_row)
         if key == curses.KEY_UP and selected_row == -1:
             selected_row = len(menu_items) - 1
         elif key == curses.KEY_DOWN and selected_row == len(menu_items):
@@ -87,17 +89,20 @@ def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
             return selected_row
 
 
-# Returns the selected fish after pressing enter
-def fish_menu(mainscr, scr, fish_array, selected_row):
-
+# Returns the selected fish after pressing enter. Selected row can be none for the screen isn't controllable
+def lscreen_fish_menu(mainscr, selected_row=None):
+    # lscreen will show all of the the fish in the file but could change depending on search options
+    fish_array = fs.get_fish_objects()
+    scr = lhalf_box_draw(mainscr)
     # The starting position that the fish_array will read from in the while loop. This allows for scrolling
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
     while 1:
-        # The fish currently being shown on the screen
+        # The fish currently being shown on the screen. Clears itself when loop restarts
         fish_displayed = []
         maxh, maxw = scr.getmaxyx()
+        beginy, beginx = scr.getbegyx()
         # The last row that text can be placed in
         ending_row = maxh - 1
         # The size of each row window
@@ -105,8 +110,8 @@ def fish_menu(mainscr, scr, fish_array, selected_row):
         row_scr_width = maxw - 2
 
         # Start coordinate of the heading section of the screen
-        heading_start_y = 2
-        heading_start_x = 1
+        heading_start_y = beginy + 2
+        heading_start_x = beginx + 1
         heading_row = curses.newwin(row_scr_height, row_scr_width, heading_start_y, heading_start_x)
 
         # x positions that the text on the screen starts at
@@ -117,15 +122,15 @@ def fish_menu(mainscr, scr, fish_array, selected_row):
         # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
         row_y = 0
 
-        heading_row.addstr(0, name_pos, "Name", curses.A_BOLD)
-        heading_row.addstr(0, price_pos, "Price", curses.A_BOLD)
-        heading_row.addstr(0, location_pos, "Location", curses.A_BOLD)
+        heading_row.addstr(row_y, name_pos, "Name", curses.A_BOLD)
+        heading_row.addstr(row_y, price_pos, "Price", curses.A_BOLD)
+        heading_row.addstr(row_y, location_pos, "Location", curses.A_BOLD)
         heading_row.refresh()
 
         for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
             # The position the new window starts getting created from
-            start_y = 3 + idx
-            start_x = 1
+            start_y = beginy + 3 + idx
+            start_x = beginx + 1
             # Only adds next row if it won't overflow off screen
             if start_y < ending_row:
                 # Creates a new window that will store a row's worth of fish data including name, price, location
@@ -142,48 +147,121 @@ def fish_menu(mainscr, scr, fish_array, selected_row):
                 scr_row.refresh()
                 fish_displayed.append([row, scr_row])
 
-        selected_row, key = keyboard_movement_ud(mainscr, fish_array, selected_row)
+        # Determines if the list is read only or if it can be navigated through
+        if selected_row is not None:
+            selected_row, key = keyboard_movement_ud(mainscr, selected_row)
+            # If the enter key is pressed return the selected fish
+            if key == curses.KEY_ENTER or key in [10, 13]:
+                return fish_array[fish_array_position]
+
+            else:
+                selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
+                                                                                         selected_row, fish_array_start,
+                                                                                         fish_array, fish_displayed)
+        else:
+            break
 
 
-        # If the up key was pressed move up the list
-        if key == curses.KEY_UP:
-            fish_array_position -= 1
-            # For when the up key is pressed at the very start of the list which loops it back around to the end
-            if fish_array_position == -1:
-                # Set all parameters to be the end of the list
-                selected_row = len(fish_displayed) - 1
-                fish_array_start = (len(fish_array) - 1) - (len(fish_displayed) - 1)
-                fish_array_position = len(fish_array) - 1
-            # When the up key is pressed at the top of the list then scroll up
-            elif selected_row < 0 and fish_array_position != -1:
-                fish_array_start -= 1
-                # +1 to set it back to the top of the list making selected row 0
-                selected_row += 1
+def rscreen_fish_menu(mainscr, fish_array, selected_row=None):
+    # rscreen will show all of the the fish in the file but could change depending on search options
+    scr = rhalf_box_draw(mainscr)
+    # The starting position that the fish_array will read from in the while loop. This allows for scrolling
+    fish_array_start = 0
+    # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
+    fish_array_position = 0
+    while 1:
+        # The fish currently being shown on the screen
+        fish_displayed = []
+        maxh, maxw = scr.getmaxyx()
+        beginy, beginx = scr.getbegyx()
+        # The last row that text can be placed in
+        ending_row = maxh - 1
+        # The size of each row window
+        row_scr_height = 1
+        row_scr_width = maxw - 2
 
-        # If the down key was move down the list
-        if key == curses.KEY_DOWN:
-            fish_array_position += 1
-            # For when the down key is pressed at the end of the list which sets it back to the start
-            if fish_array_position > len(fish_array) - 1:
-                # Reset all parameters to be the start of the list
-                fish_array_start = 0
-                selected_row = 0
-                fish_array_position = 0
-            # When the down key is pressed at the end of the visible list then scroll down
-            elif selected_row > len(fish_displayed) - 1:
-                fish_array_start += 1
-                # -1 to have it keep highlighting the last entry in the list being len(fish_display) - 1
-                selected_row -= 1
+        # Start coordinate of the heading section of the screen
+        heading_start_y = beginy + 2
+        heading_start_x = beginx + 1
+        heading_row = curses.newwin(row_scr_height, row_scr_width, heading_start_y, heading_start_x)
 
-        # If the enter key is pressed copy the fish and add it to the right panel
-        if key == curses.KEY_ENTER or key in [10, 13]:
-            return fish_array[fish_array_position]
+        # x positions that the text on the screen starts at
+        name_pos = 0
+        price_pos = row_scr_width // 2
+
+        # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
+        row_y = 0
+
+        heading_row.addstr(row_y, name_pos, "Name", curses.A_BOLD)
+        heading_row.addstr(row_y, price_pos, "Price", curses.A_BOLD)
+        heading_row.refresh()
+
+        for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
+            # The position the new window starts getting created from
+            start_y = beginy + 3 + idx
+            start_x = beginx + 1
+            # Only adds next row if it won't overflow off screen
+            if start_y < ending_row:
+                # Creates a new window that will store a row's worth of fish data including name, price, location
+                scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
+
+                if selected_row is not None:
+                    if selected_row == idx:
+                        scr_row.bkgd(' ', curses.color_pair(1))
+
+                scr_row.addstr(row_y, name_pos, row.name)
+                scr_row.addstr(row_y, price_pos, row.price)
+
+                scr_row.refresh()
+                fish_displayed.append([row, scr_row])
+
+        # Determines if the list is read only or if it can be navigated through
+        if selected_row is not None:
+            selected_row, key = keyboard_movement_ud(mainscr, selected_row)
+            # If the enter key is pressed return the selected fish
+            if key == curses.KEY_ENTER or key in [10, 13]:
+                return fish_array[fish_array_position]
+
+            else:
+                selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
+                                                                                         selected_row, fish_array_start,
+                                                                                         fish_array, fish_displayed)
+        else:
+            break
 
 
+def keyboard_selection(key, fish_array_position, selected_row, fish_array_start, fish_array, fish_displayed):
+    # If the up key was pressed move up the list
+    if key == curses.KEY_UP:
+        fish_array_position -= 1
+        # For when the up key is pressed at the very start of the list which loops it back around to the end
+        if fish_array_position == -1:
+            # Set all parameters to be the end of the list
+            selected_row = len(fish_displayed) - 1
+            fish_array_start = (len(fish_array) - 1) - (len(fish_displayed) - 1)
+            fish_array_position = len(fish_array) - 1
+        # When the up key is pressed at the top of the list then scroll up
+        elif selected_row < 0 and fish_array_position != -1:
+            fish_array_start -= 1
+            # +1 to set it back to the top of the list making selected row 0
+            selected_row += 1
 
-# Initialisation of the primary screen
-def startup(stdscr):
-    curses.curs_set(0)
+    # If the down key was move down the list
+    if key == curses.KEY_DOWN:
+        fish_array_position += 1
+        # For when the down key is pressed at the end of the list which sets it back to the start
+        if fish_array_position > len(fish_array) - 1:
+            # Reset all parameters to be the start of the list
+            fish_array_start = 0
+            selected_row = 0
+            fish_array_position = 0
+        # When the down key is pressed at the end of the visible list then scroll down
+        elif selected_row > len(fish_displayed) - 1:
+            fish_array_start += 1
+            # -1 to have it keep highlighting the last entry in the list being len(fish_display) - 1
+            selected_row -= 1
+
+    return selected_row, fish_array_position, fish_array_start
 
 
 # Displays header text above the current menu
@@ -206,6 +284,7 @@ def box_reset(scr):
 
 
 def start_menu(scr):
+    curses.curs_set(0)
     start_menu_items = ["Calculate Profit", "Add Fish", "Delete Fish", "Edit Fish", "Exit"]
     menu_selection = centered_menu_ud(scr, start_menu_items, 0,  "Animal Crossing Fish Search")
 
@@ -228,11 +307,18 @@ def exit_menu(scr):
 def profit_menu(scr):
     box_reset(scr)
     # Draws the left and right side screens
-    lscreen = lhalf_box_draw(scr)
     rscreen = rhalf_box_draw(scr)
+    current_screen = 0
+    # rscreen starts empty but is filled depending on the selection by the user.
+    rscreen_fish_array = []
 
-    lscreen_fish_array = fs.get_fish_objects()
-    fish_selected = fish_menu(scr, lscreen, lscreen_fish_array, 0)
+    while 1:
+        if current_screen == 0:
+            fish_selected = lscreen_fish_menu(scr, 0)
+            rscreen_fish_array.append(fish_selected)
+            rscreen_fish_menu(scr, rscreen_fish_array)
+        else:
+            fish_selected = rscreen_fish_menu(scr, rscreen_fish_array, 0)
 
 
     # if right arrow pressed go to right screen. If left arrow go left screen. Start left screen
