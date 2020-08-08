@@ -48,13 +48,17 @@ def profit_menu(scr):
     # rscreen starts empty but is filled depending on the selection by the user.
     rscreen_fish_array = []
 
+    # Draw the left and right screens with header data and footer text
+    lscreen = lhalf_box_create(scr)
+    rscreen = rhalf_box_create(scr)
+
     while 1:
         if current_screen == 0:
-            fish_selected = lscreen_fish_menu(scr, 0)
+            fish_selected = lscreen_fish_menu(scr, lscreen, 0)
             rscreen_fish_array.append(fish_selected)
-            rscreen_fish_menu(scr, rscreen_fish_array)
+            rscreen_fish_menu(scr, rscreen, rscreen_fish_array)
         else:
-            fish_selected = rscreen_fish_menu(scr, rscreen_fish_array, 0)
+            fish_selected = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
 
 
 # Menu that displays information in the center of the screen. When enter is pressed it returns the selected row
@@ -123,10 +127,9 @@ def window_reset(scr):
 
 
 # Returns the selected fish after pressing enter. Selected row can be none for when the screen shouldn't be controllable
-def lscreen_fish_menu(mainscr, selected_row=None):
+def lscreen_fish_menu(mainscr, scr, selected_row=None):
     # lscreen will show all of the the fish in the file but could change depending on search options
     fish_array = fs.get_fish_objects()
-    scr = lhalf_box_draw(mainscr)
     # The starting position that the loop will read from when going through fish array. Required to allow for scrolling
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
@@ -145,12 +148,7 @@ def lscreen_fish_menu(mainscr, selected_row=None):
         # x positions that the text on the screen starts at
         name_pos = 0
         price_pos = row_scr_width // 2
-        location_pos = row_scr_width - row_scr_width // 4
-        # The heading items in the array and the position that they will be on the screen
-        heading_and_pos = [["Name", name_pos], ["Price", price_pos], ["Location", location_pos]]
-
-        # Creates the heading row and heading data
-        create_heading_row(heading_and_pos, scr)
+        location_pos = row_scr_width - (row_scr_width // 4)
 
         # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
         row_y = 0
@@ -193,9 +191,8 @@ def lscreen_fish_menu(mainscr, selected_row=None):
 
 
 # Returns the selected fish after pressing enter. Selected row can be none for when the screen shouldn't be controllable
-def rscreen_fish_menu(mainscr, fish_array, selected_row=None):
+def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
     # rscreen will show fish received through the function parameter based on user selection
-    scr = rhalf_box_draw(mainscr)
     # The starting position that the loop will read from when going through fish array. Required to allow for scrolling
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
@@ -205,8 +202,8 @@ def rscreen_fish_menu(mainscr, fish_array, selected_row=None):
         fish_displayed = []
         maxh, maxw = scr.getmaxyx()
         beginy, beginx = scr.getbegyx()
-        # The last row that text can be placed in
-        ending_row = maxh - 1
+        # The last row that text can be placed in. - 2 to make room for footer
+        ending_row = maxh - 2
         # The size of each row window
         row_scr_height = 1
         row_scr_width = maxw - 2
@@ -214,11 +211,6 @@ def rscreen_fish_menu(mainscr, fish_array, selected_row=None):
         # x positions that the text on the screen starts at
         name_pos = 0
         price_pos = row_scr_width // 2
-        # The heading items in the array and the position that they will be on the screen sent as a 2d array
-        heading_and_pos = [["Name", name_pos], ["Price", price_pos]]
-
-        # Creates the heading row and heading data
-        create_heading_row(heading_and_pos, scr)
 
         # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
         row_y = 0
@@ -295,26 +287,51 @@ def keyboard_selection(key, fish_array_position, selected_row, fish_array_start,
 
 
 # Draws the left window and draws a visible box for its outline. Returns the window object
-def lhalf_box_draw(scr):
-    y, x = scr.getmaxyx()
+def lhalf_box_create(scr):
+    maxh, maxw = scr.getmaxyx()
     begin_y = 0; begin_x = 0
-    height = y; width = x // 2
-    lscreen = curses.newwin(height, width, begin_y, begin_x)
+    lmaxh = maxh; lmaxw = maxw // 2
+    lscreen = curses.newwin(lmaxh, lmaxw, begin_y, begin_x)
     lscreen.box()
     lscreen.refresh()
+
+    # The width of each row window
+    row_scr_width = get_row_width(lmaxw)
+
+    # x positions that the text on the screen starts at
+    name_pos = 0
+    price_pos = row_scr_width // 2
+    location_pos = row_scr_width - (row_scr_width // 4)
+    # The heading items in the array and the position that they will be on the screen
+    heading_and_pos = [["Name", name_pos], ["Price", price_pos], ["Location", location_pos]]
+
+    # Creates the heading row and heading data
+    create_heading_row(heading_and_pos, lscreen)
 
     return lscreen
 
 
 # Creates the right window and draws a visible box for its outline. Returns the window object
-def rhalf_box_draw(scr):
-    y, x = scr.getmaxyx()
-    begin_y = 0; begin_x = x // 2
+def rhalf_box_create(scr):
+    maxh, maxw = scr.getmaxyx()
+    begin_y = 0; begin_x = maxw // 2
     # Width needs to be divided by two otherwise it would be the size of a whole screen
-    height = y; width = x // 2
-    rscreen = curses.newwin(height, width, begin_y, begin_x)
+    rmaxh = maxh; rmaxw = maxw // 2
+    rscreen = curses.newwin(rmaxh, rmaxw, begin_y, begin_x)
     rscreen.box()
     rscreen.refresh()
+
+    # The size of each row window
+    row_scr_width = rmaxw - 2
+
+    # x positions that the text on the screen starts at
+    name_pos = 0
+    price_pos = row_scr_width // 2
+    # The heading items in the array and the position that they will be on the screen sent as a 2d array
+    heading_and_pos = [["Name", name_pos], ["Price", price_pos]]
+
+    # Creates the heading row and heading data
+    create_heading_row(heading_and_pos, rscreen)
 
     return rscreen
 

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4b0318b5-6899-423e-ad34-5c2ed31098fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CursesFishSearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/CursesFishSearch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,14 +31,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Codility" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Tim\Desktop\Codility" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.scratch_1">
+  <component name="RunManager" selected="Python.CursesFishSearch">
     <configuration name="Array Shift" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FishSearch" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -80,7 +81,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Missing Number in Array" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="CursesFishSearch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FishSearch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,14 +89,14 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/Codility" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/Codility/Missing Number in Array.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CursesFishSearch.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
@@ -146,17 +147,17 @@
     <list>
       <item itemvalue="Python.scratch" />
       <item itemvalue="Python.scratch_1" />
-      <item itemvalue="Python.Missing Number in Array" />
       <item itemvalue="Python.Array Shift" />
       <item itemvalue="Python.Binary Gaps" />
+      <item itemvalue="Python.CursesFishSearch" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.CursesFishSearch" />
         <item itemvalue="Python.scratch_1" />
         <item itemvalue="Python.Binary Gaps" />
         <item itemvalue="Python.Array Shift" />
         <item itemvalue="Python.scratch" />
-        <item itemvalue="Python.Missing Number in Array" />
       </list>
     </recent_temporary>
   </component>
@@ -174,10 +175,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595488892469">
+    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596889531654">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1595488892469" />
+    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1596889531654" />
     <state x="534" y="94" key="#xdebugger.XInspectDialog" timestamp="1595563887639">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -186,50 +187,50 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state width="1278" height="241" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1596264514224" />
-    <state x="421" y="85" key="FileChooserDialogImpl" timestamp="1596537769044">
+    <state x="421" y="85" key="FileChooserDialogImpl" timestamp="1596889431165">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="421" y="85" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1596537769044" />
-    <state width="1259" height="197" key="GridCell.Tab.0.bottom" timestamp="1596711281247">
+    <state x="421" y="85" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1596889431165" />
+    <state width="1259" height="184" key="GridCell.Tab.0.bottom" timestamp="1596892359519">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.0.center" timestamp="1596711281247">
+    <state width="1259" height="184" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596892359519" />
+    <state width="1259" height="184" key="GridCell.Tab.0.center" timestamp="1596892359519">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.0.left" timestamp="1596711281247">
+    <state width="1259" height="184" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1596892359519" />
+    <state width="1259" height="184" key="GridCell.Tab.0.left" timestamp="1596892359519">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.0.right" timestamp="1596711281247">
+    <state width="1259" height="184" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1596892359519" />
+    <state width="1259" height="184" key="GridCell.Tab.0.right" timestamp="1596892359519">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.1.bottom" timestamp="1596711281247">
+    <state width="1259" height="184" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1596892359519" />
+    <state width="1259" height="197" key="GridCell.Tab.1.bottom" timestamp="1596891692923">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.1.center" timestamp="1596711281247">
+    <state width="1259" height="197" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596891692923" />
+    <state width="1259" height="197" key="GridCell.Tab.1.center" timestamp="1596891692923">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.1.left" timestamp="1596711281247">
+    <state width="1259" height="197" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1596891692923" />
+    <state width="1259" height="197" key="GridCell.Tab.1.left" timestamp="1596891692923">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
-    <state width="1259" height="197" key="GridCell.Tab.1.right" timestamp="1596711281247">
+    <state width="1259" height="197" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1596891692923" />
+    <state width="1259" height="197" key="GridCell.Tab.1.right" timestamp="1596891692923">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="197" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1596891692923" />
     <state x="454" y="55" key="RollbackChangesDialog" timestamp="1595409717895">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="454" y="55" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1595409717895" />
-    <state x="144" y="0" key="SettingsEditor" timestamp="1595833714263">
+    <state x="144" y="0" key="SettingsEditor" timestamp="1596889524273">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="144" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1595833714263" />
+    <state x="144" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1596889524273" />
     <state x="349" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1596885473428">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -258,11 +259,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="R" />
-        <watch expression="R" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>
