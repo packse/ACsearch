@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4b0318b5-6899-423e-ad34-5c2ed31098fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CursesFishSearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/CursesFishSearch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Testing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,10 +28,17 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Codility" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.CursesFishSearch">
-    <configuration name="CursesFishSearch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\Desktop\Codility" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.scratch_1">
+    <configuration name="Array Shift" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FishSearch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -41,32 +46,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/Codility" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CursesFishSearch.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="true" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="FishSearch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="FishSearch" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FishSearch.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/Codility/Array Shift.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -75,7 +59,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Testing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Binary Gaps" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FishSearch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -83,11 +67,74 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/Codility" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Testing.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/Codility/Binary Gaps.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Missing Number in Array" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FishSearch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/Codility" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/Codility/Missing Number in Array.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FishSearch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch_1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FishSearch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -97,15 +144,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.CursesFishSearch" />
-      <item itemvalue="Python.FishSearch" />
-      <item itemvalue="Python.Testing" />
+      <item itemvalue="Python.scratch" />
+      <item itemvalue="Python.scratch_1" />
+      <item itemvalue="Python.Missing Number in Array" />
+      <item itemvalue="Python.Array Shift" />
+      <item itemvalue="Python.Binary Gaps" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.CursesFishSearch" />
-        <item itemvalue="Python.FishSearch" />
-        <item itemvalue="Python.Testing" />
+        <item itemvalue="Python.scratch_1" />
+        <item itemvalue="Python.Binary Gaps" />
+        <item itemvalue="Python.Array Shift" />
+        <item itemvalue="Python.scratch" />
+        <item itemvalue="Python.Missing Number in Array" />
       </list>
     </recent_temporary>
   </component>
@@ -131,46 +182,46 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="534" y="94" key="#xdebugger.XInspectDialog/0.0.1280.680@0.0.1280.680" timestamp="1595563887639" />
-    <state width="1278" height="241" key="DebuggerActiveHint" timestamp="1595921622969">
+    <state width="1278" height="241" key="DebuggerActiveHint" timestamp="1596264514224">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1278" height="241" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1595921622969" />
-    <state x="421" y="85" key="FileChooserDialogImpl" timestamp="1594884847016">
+    <state width="1278" height="241" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1596264514224" />
+    <state x="421" y="85" key="FileChooserDialogImpl" timestamp="1596537769044">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="421" y="85" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1594884847016" />
-    <state width="1259" height="233" key="GridCell.Tab.0.bottom" timestamp="1596105472887">
+    <state x="421" y="85" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1596537769044" />
+    <state width="1259" height="197" key="GridCell.Tab.0.bottom" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="233" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596105472887" />
-    <state width="1259" height="233" key="GridCell.Tab.0.center" timestamp="1596105472887">
+    <state width="1259" height="197" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.0.center" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="233" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1596105472887" />
-    <state width="1259" height="233" key="GridCell.Tab.0.left" timestamp="1596105472887">
+    <state width="1259" height="197" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.0.left" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="233" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1596105472887" />
-    <state width="1259" height="233" key="GridCell.Tab.0.right" timestamp="1596105472887">
+    <state width="1259" height="197" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.0.right" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="233" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1596105472887" />
-    <state width="1259" height="79" key="GridCell.Tab.1.bottom" timestamp="1596016984935">
+    <state width="1259" height="197" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.1.bottom" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="79" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596016984935" />
-    <state width="1259" height="79" key="GridCell.Tab.1.center" timestamp="1596016984935">
+    <state width="1259" height="197" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.1.center" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="79" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1596016984935" />
-    <state width="1259" height="79" key="GridCell.Tab.1.left" timestamp="1596016984935">
+    <state width="1259" height="197" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.1.left" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="79" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1596016984935" />
-    <state width="1259" height="79" key="GridCell.Tab.1.right" timestamp="1596016984935">
+    <state width="1259" height="197" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
+    <state width="1259" height="197" key="GridCell.Tab.1.right" timestamp="1596711281247">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="79" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1596016984935" />
+    <state width="1259" height="197" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1596711281247" />
     <state x="454" y="55" key="RollbackChangesDialog" timestamp="1595409717895">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -179,13 +230,39 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="144" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1595833714263" />
-    <state x="349" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1596087083365">
+    <state x="349" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1596885473428">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="349" y="169" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1596087083365" />
-    <state x="303" y="1" width="672" height="160" key="search.everywhere.popup" timestamp="1596106209745">
+    <state x="349" y="169" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1596885473428" />
+    <state x="322" y="0" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1596709752772">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="303" y="1" width="672" height="160" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1596106209745" />
+    <state x="322" y="0" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1280.680@0.0.1280.680" timestamp="1596709752772" />
+    <state x="303" y="1" width="672" height="160" key="search.everywhere.popup" timestamp="1596613217790">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="303" y="1" width="672" height="160" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1596613217790" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/Desktop/Codility/Quicksort.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/Desktop/Codility/Quicksort.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="R" />
+        <watch expression="R" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

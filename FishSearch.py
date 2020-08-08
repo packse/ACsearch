@@ -171,11 +171,11 @@ def find_fish():
 
 # Text based delete menu
 def delete_text_menu():
-    valid = 0
+    valid = False
     print_fish()
     fish_array = get_fish_objects()
     # Loops until a valid fish is deleted
-    while valid == 0:
+    while not valid:
         fish_name = input("Enter the name of the fish you wish to delete: ")
         # Checks if the fish exists in the file using the name given
         for fish in fish_array:
@@ -214,12 +214,12 @@ def edit_text_menu():
     fish_array = get_fish_objects()
     checking_array = [fish.name.upper() for fish in fish_array]
     chosen_fish = Fish()
-    valid = 0
+    valid = False
     print_fish()
     old_name = input("Please enter the name of the fish you wish to change: ")
-    while valid == 0:
+    while not valid:
         if old_name.upper() in checking_array:
-            valid = 1
+            valid = True
         else:
             old_name = input("Fish doesn't exist. Please try again: ")
 
@@ -291,13 +291,13 @@ def select_fish():
     fish_selected_array = []
     # Continue looping until user has finished choosing all fish they wish to sum
     while finished == 0:
-        valid = 0
-        while valid == 0:
+        valid = False
+        while not valid:
             for fish in fish_array:
                 if fish_name.upper() == fish.name.upper():
-                    valid = 1
+                    valid = True
                     fish_selected_array.append(fish)
-            if valid == 0:
+            if not valid:
                 fish_name = input("Fish doesn't exist. Please try again: ")
 
         print("Current Fish:")
