@@ -44,7 +44,7 @@ def exit_menu(scr):
 def profit_menu(scr):
     window_reset(scr)
     # Current screen begin as the left screen
-    current_screen = 0
+    current_screen = "left"
     # rscreen starts empty but is filled depending on the selection by the user.
     rscreen_fish_array = []
 
@@ -53,13 +53,38 @@ def profit_menu(scr):
     rscreen = rhalf_box_create(scr)
 
     while 1:
-        if current_screen == 0:
-            fish_selected = lscreen_fish_menu(scr, lscreen, 0)
-            rscreen_fish_array.append(fish_selected)
-            rscreen_fish_menu(scr, rscreen, rscreen_fish_array)
-        else:
-            fish_selected = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
-
+        if current_screen == "left":
+            fish_selected, key_pressed = lscreen_fish_menu(scr, lscreen, 0)
+            if key_pressed == curses.KEY_ENTER or key_pressed in [10, 13]:
+                rscreen_fish_array.append(fish_selected[0])
+                rscreen_fish_menu(scr, rscreen, rscreen_fish_array)
+            # If the right key is pressed and there are fish displayed on the right screen to select from
+            elif key_pressed == curses.KEY_RIGHT and len(rscreen_fish_array) > 0:
+                # Remove the highlighting of the currently selected row on the left screen
+                highlighted_row = fish_selected[1]
+                highlighted_row.bkgd(' ', curses.color_pair(0))
+                highlighted_row.refresh()
+                # Set the current usable screen to right
+                current_screen = "right"
+        elif current_screen == "right":
+            array_pos, fish_selected, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
+            # If enter pressed remove selected fish from right screen
+            if key_pressed == curses.KEY_ENTER or key_pressed in [10, 13]:
+                rscreen_fish_array.pop(array_pos)
+                # Need to clear and redraw the entire screen to remove list items
+                rscreen.clear()
+                rscreen = rhalf_box_create(scr)
+                # If the size of the fish array for the right screen is empty change usable screen to the left screen
+                if len(rscreen_fish_array) <= 0:
+                    current_screen = "left"
+            # If left key is pressed when on the right screen
+            elif key_pressed == curses.KEY_LEFT:
+                # Remove the highlighting of the currently selected row on the right screen
+                highlighted_row = fish_selected[1]
+                highlighted_row.bkgd(' ', curses.color_pair(0))
+                highlighted_row.refresh()
+                # Change the current usable screen to left
+                current_screen = "left"
 
 # Menu that displays information in the center of the screen. When enter is pressed it returns the selected row
 def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
@@ -177,10 +202,11 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
         # Determines if the list is read only or if it can be navigated through
         if selected_row is not None:
             selected_row, key = keyboard_movement_ud(mainscr, selected_row)
-            # If the enter key is pressed return the selected fish
-            if key == curses.KEY_ENTER or key in [10, 13]:
-                return fish_array[fish_array_position]
-            # If another key is pressed determine how it should be handled
+            # If the enter key or right key is pressed return the selected fish with the key
+            if key == curses.KEY_ENTER or key in [10, 13] or key == curses.KEY_RIGHT:
+                # Return the selected fish along with the row data to clear highlight and the key pressed
+                return fish_displayed[selected_row], key
+            # If up or down key is pressed determine how it should be handled
             else:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
                                                                                          selected_row, fish_array_start,
@@ -239,9 +265,11 @@ def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
         if selected_row is not None:
             selected_row, key = keyboard_movement_ud(mainscr, selected_row)
             # If the enter key is pressed return the selected fish
-            if key == curses.KEY_ENTER or key in [10, 13]:
-                return fish_array[fish_array_position]
-            # If another key is pressed determine how it should be handled
+            if key == curses.KEY_ENTER or key in [10, 13] or key == curses.KEY_LEFT:
+                # Return the position the fish to be deleted is in the array, the fish displayed data which contains
+                # information on the row to clear highlighting and the key pressed
+                return fish_array_position, fish_displayed[selected_row], key
+            # If up or down was pressed determine how it should be handled
             else:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
                                                                                          selected_row, fish_array_start,
