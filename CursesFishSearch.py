@@ -4,12 +4,23 @@ import FishSearch as fs
 
 
 # Todo
-# Better interface using Curses (List all fish nicely in grid like format)
 # Proper Confirm/Cancel and going back to the previous screen should be implemented
 # Could replace the entering of data one by one and instead have multiple fields and being able to tab between them
 # Resize error needs to be handled either by exception or using the os library to resize the terminal before crash
-# Add footer section for the right screen that will display sum of fish
+# Search function that changes what fish are displayed on either the right or left screen
+# When pressing enter it would work better if the currently selected row is remembered so it doesn't start at the top
+# of the list
 
+#Search function _____
+# If letters are pressed then display them to the screen and change the data in the screen accordingly. If backspace is
+# pressed similarly update the list. If the search section is empty then display all fish. The search should work for
+# both screens and display them according to that. Probably don't need to remember the search data of one scren when it
+# changes to the other.
+
+
+# Big revelation
+# Ignore where the actual cursor is placed on the screen. Simply have a search window located somewhere near the top of
+# the screen. When text is typed it will appear by using addstr()
 
 def main(stdscr):
     # 1 is essentially the variable of the created colour pair
@@ -22,7 +33,6 @@ def start_menu(scr):
     curses.curs_set(0)
     start_menu_items = ["Calculate Profit", "Add Fish", "Delete Fish", "Edit Fish", "Exit"]
     menu_selection = centered_menu_ud(scr, start_menu_items, 0, "Animal Crossing Fish Search")
-
     if menu_selection == 0:
         profit_menu(scr)
     elif menu_selection == len(start_menu_items) - 1:
@@ -42,7 +52,9 @@ def exit_menu(scr):
 
 # Run when the calculate profit option is selected
 def profit_menu(scr):
-    window_reset(scr)
+    # Remove box around the mainscr
+    scr.clear()
+    scr.refresh()
     # Current screen begin as the left screen
     current_screen = "left"
     # rscreen starts empty but is filled depending on the selection by the user.
@@ -165,7 +177,7 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
         maxh, maxw = scr.getmaxyx()
         beginy, beginx = scr.getbegyx()
         # The last row that text can be placed in
-        ending_row = maxh - 1
+        ending_row = maxh + 1
         # The size of each row window
         row_scr_height = get_row_height()
         row_scr_width = get_row_width(maxw)
@@ -180,7 +192,7 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
 
         for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
             # The position the new window starts getting created from
-            start_y = beginy + 3 + idx
+            start_y = beginy + 2 + idx
             start_x = beginx + 1
             # Only adds next row if it won't overflow off screen
             if start_y < ending_row:
@@ -223,27 +235,31 @@ def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
+
+    if len(fish_array) > 0:
+        create_footer_row(fish_array, scr)
+
     while 1:
         # The fish currently being shown on the screen since the screen size can vary. Clears itself when loop restarts
         fish_displayed = []
         maxh, maxw = scr.getmaxyx()
         beginy, beginx = scr.getbegyx()
         # The last row that text can be placed in. - 2 to make room for footer
-        ending_row = maxh - 2
+        ending_row = maxh
         # The size of each row window
         row_scr_height = 1
         row_scr_width = maxw - 2
 
         # x positions that the text on the screen starts at
         name_pos = 0
-        price_pos = row_scr_width // 2
+        price_pos = row_scr_width - (row_scr_width // 7)
 
         # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
         row_y = 0
 
         for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
             # The position the new window starts getting created from
-            start_y = beginy + 3 + idx
+            start_y = beginy + 2 + idx
             start_x = beginx + 1
             # Only adds next row if it won't overflow off screen
             if start_y < ending_row:
@@ -317,8 +333,8 @@ def keyboard_selection(key, fish_array_position, selected_row, fish_array_start,
 # Draws the left window and draws a visible box for its outline. Returns the window object
 def lhalf_box_create(scr):
     maxh, maxw = scr.getmaxyx()
-    begin_y = 0; begin_x = 0
-    lmaxh = maxh; lmaxw = maxw // 2
+    begin_y = 2; begin_x = 0
+    lmaxh = maxh - 2; lmaxw = maxw // 2
     lscreen = curses.newwin(lmaxh, lmaxw, begin_y, begin_x)
     lscreen.box()
     lscreen.refresh()
@@ -342,19 +358,19 @@ def lhalf_box_create(scr):
 # Creates the right window and draws a visible box for its outline. Returns the window object
 def rhalf_box_create(scr):
     maxh, maxw = scr.getmaxyx()
-    begin_y = 0; begin_x = maxw // 2
+    begin_y = 2; begin_x = maxw // 2
     # Width needs to be divided by two otherwise it would be the size of a whole screen
-    rmaxh = maxh; rmaxw = maxw // 2
+    rmaxh = maxh - 2; rmaxw = maxw // 2
     rscreen = curses.newwin(rmaxh, rmaxw, begin_y, begin_x)
     rscreen.box()
     rscreen.refresh()
 
-    # The size of each row window
+    # The size of each row window leaving space for the footer
     row_scr_width = rmaxw - 2
 
     # x positions that the text on the screen starts at
     name_pos = 0
-    price_pos = row_scr_width // 2
+    price_pos = row_scr_width - (row_scr_width // 7)
     # The heading items in the array and the position that they will be on the screen sent as a 2d array
     heading_and_pos = [["Name", name_pos], ["Price", price_pos]]
 
@@ -371,7 +387,7 @@ def create_heading_row(heading_array, scr):
     # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
     row_y = 0
     # Start coordinates of the heading section of the screen
-    heading_start_y = beginy + 2
+    heading_start_y = beginy + 1
     heading_start_x = beginx + 1
 
     heading_row = curses.newwin(get_row_height(), get_row_width(maxw), heading_start_y, heading_start_x)
@@ -380,6 +396,26 @@ def create_heading_row(heading_array, scr):
         heading_row.addstr(row_y, heading_col[1], heading_col[0], curses.A_BOLD)
 
     heading_row.refresh()
+
+# Create the sum data appended to the bottom of the footer with all of the selected fish
+def create_footer_row(fish_array, scr):
+    maxh, maxw = scr.getmaxyx()
+    fish_prices = [int(item.price) for item in fish_array]
+    fish_total = fs.sum_fish(fish_prices)
+    footer_start_y = maxh
+    footer_start_x = maxw + 1
+
+    # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
+    row_y = 0
+
+    footer_row = curses.newwin(get_row_height(), get_row_width(maxw), footer_start_y, footer_start_x)
+
+    maxhf, maxwf = footer_row.getmaxyx()
+
+    footer_row.addstr(row_y, maxwf-(maxwf//4), "Sum", curses.A_BOLD)
+    footer_row.addstr(row_y, maxwf-(maxwf//7), str(fish_total), curses.A_BOLD)
+    footer_row.refresh()
+
 
 
 # Gets the height of a single row of data. Used to prevent it being a global variable
