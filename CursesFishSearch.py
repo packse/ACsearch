@@ -14,8 +14,12 @@ import FishSearch as fs
 #Search function _____
 # If letters are pressed then display them to the screen and change the data in the screen accordingly. If backspace is
 # pressed similarly update the list. If the search section is empty then display all fish. The search should work for
-# both screens and display them according to that. Probably don't need to remember the search data of one scren when it
+# both screens and display them according to that. Probably don't need to remember the search data of one screen when it
 # changes to the other.
+
+# Three step process: First create the search box without any data in it. Then when an alphabetical key is pressed
+# instead of returning, the loop within that screen will restart with the data being redrawn based on the search query.
+# Remember to set selected row back to zero each time another character is written
 
 
 # Big revelation
@@ -171,13 +175,18 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
+
+    searchscreen = searchscreen = search_box_create(mainscr)
+    query = "johns"
+    search_box_fill(searchscreen, query)
+
     while 1:
         # The fish currently being shown on the screen since the screen size can vary. Clears itself when loop restarts
         fish_displayed = []
         maxh, maxw = scr.getmaxyx()
         beginy, beginx = scr.getbegyx()
         # The last row that text can be placed in
-        ending_row = maxh + 1
+        ending_row = maxh + beginy - 1
         # The size of each row window
         row_scr_height = get_row_height()
         row_scr_width = get_row_width(maxw)
@@ -245,7 +254,7 @@ def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
         maxh, maxw = scr.getmaxyx()
         beginy, beginx = scr.getbegyx()
         # The last row that text can be placed in. - 2 to make room for footer
-        ending_row = maxh
+        ending_row = maxh + beginy - 2
         # The size of each row window
         row_scr_height = 1
         row_scr_width = maxw - 2
@@ -330,11 +339,28 @@ def keyboard_selection(key, fish_array_position, selected_row, fish_array_start,
     return selected_row, fish_array_position, fish_array_start
 
 
+# Creates the search window by setting up the dimensions and returns it as an object
+def search_box_create(scr):
+    maxh, maxw = scr.getmaxyx()
+    begin_y = 3; begin_x = 0
+    smaxh = 2; smaxw = maxw//3
+    searchscreen = curses.newwin(smaxh, smaxw, begin_y, begin_x)
+
+    return searchscreen
+
+
+# Fills the search box with the current search query
+def search_box_fill(scr, query):
+    scr.addstr(1, 1, "Search: ", curses.A_BOLD)
+    scr.addstr(query)
+    scr.refresh()
+
+
 # Draws the left window and draws a visible box for its outline. Returns the window object
 def lhalf_box_create(scr):
     maxh, maxw = scr.getmaxyx()
-    begin_y = 2; begin_x = 0
-    lmaxh = maxh - 2; lmaxw = maxw // 2
+    begin_y = 5; begin_x = 0
+    lmaxh = maxh - begin_y; lmaxw = maxw // 2
     lscreen = curses.newwin(lmaxh, lmaxw, begin_y, begin_x)
     lscreen.box()
     lscreen.refresh()
@@ -358,9 +384,9 @@ def lhalf_box_create(scr):
 # Creates the right window and draws a visible box for its outline. Returns the window object
 def rhalf_box_create(scr):
     maxh, maxw = scr.getmaxyx()
-    begin_y = 2; begin_x = maxw // 2
+    begin_y = 5; begin_x = maxw // 2
     # Width needs to be divided by two otherwise it would be the size of a whole screen
-    rmaxh = maxh - 2; rmaxw = maxw // 2
+    rmaxh = maxh - begin_y; rmaxw = maxw // 2
     rscreen = curses.newwin(rmaxh, rmaxw, begin_y, begin_x)
     rscreen.box()
     rscreen.refresh()
@@ -402,7 +428,7 @@ def create_footer_row(fish_array, scr):
     maxh, maxw = scr.getmaxyx()
     fish_prices = [int(item.price) for item in fish_array]
     fish_total = fs.sum_fish(fish_prices)
-    footer_start_y = maxh
+    footer_start_y = maxh + 3
     footer_start_x = maxw + 1
 
     # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
