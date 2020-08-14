@@ -141,6 +141,13 @@ def keyboard_movement_ud(scr, selected_row):
             return selected_row, key
         elif key == curses.KEY_ENTER or key in [10, 13]:
             return selected_row, key
+        #If the key is a character
+        elif 97 <= key <= 122:
+            selected_row = 0
+            return selected_row, key
+        #If the key is backspace
+        elif key == curses.KEY_BACKSPACE or 8:
+            return selected_row, key
         # Checks if the screen is resized as this requires exiting the loop and redrawing the terminal
         elif curses.KEY_RESIZE:
             return selected_row, key
@@ -176,11 +183,12 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
 
-    searchscreen = searchscreen = search_box_create(mainscr)
-    query = "johns"
-    search_box_fill(searchscreen, query)
+    searchscreen = search_box_create(mainscr)
+    # Query begins empty
+    query = search_box_fill(searchscreen)
 
     while 1:
+        query = search_box_fill(searchscreen, query)
         # The fish currently being shown on the screen since the screen size can vary. Clears itself when loop restarts
         fish_displayed = []
         maxh, maxw = scr.getmaxyx()
@@ -227,8 +235,12 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
             if key == curses.KEY_ENTER or key in [10, 13] or key == curses.KEY_RIGHT:
                 # Return the selected fish along with the row data to clear highlight and the key pressed
                 return fish_displayed[selected_row], key
+            elif 97 <= key <= 122:
+                query += get_character(key)
+            elif key == curses.KEY_BACKSPACE or key == 8 and query != "":
+                query = query[:-1]
             # If up or down key is pressed determine how it should be handled
-            else:
+            elif key == curses.KEY_UP or key == curses.KEY_DOWN:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
                                                                                          selected_row, fish_array_start,
                                                                                          fish_array, fish_displayed)
@@ -349,11 +361,24 @@ def search_box_create(scr):
     return searchscreen
 
 
-# Fills the search box with the current search query
-def search_box_fill(scr, query):
-    scr.addstr(1, 1, "Search: ", curses.A_BOLD)
-    scr.addstr(query)
-    scr.refresh()
+# Fills the search box with the current search query. Returns the updated query for when its size needs to be reduced
+def search_box_fill(scr, query=""):
+    scr.clear()
+    maxy, maxx = scr.getmaxyx()
+    box_start_x = 1
+    box_start_y = 1
+    prompt = "Search: "
+    available_space = maxx - len(prompt) - box_start_x
+    scr.addstr(box_start_y, box_start_x, prompt, curses.A_BOLD)
+    # Ensures there is enough space in the search box to add another character
+    if len(query) < available_space:
+        scr.addstr(query)
+        scr.refresh()
+    else:
+        query = query[:-1]
+    return query
+
+
 
 
 # Draws the left window and draws a visible box for its outline. Returns the window object
@@ -423,6 +448,7 @@ def create_heading_row(heading_array, scr):
 
     heading_row.refresh()
 
+
 # Create the sum data appended to the bottom of the footer with all of the selected fish
 def create_footer_row(fish_array, scr):
     maxh, maxw = scr.getmaxyx()
@@ -452,6 +478,16 @@ def get_row_height():
 # Gets the width of a single row of data being the width of the box - 2. Used to prevent it being a global variable
 def get_row_width(max_w):
     return max_w - 2
+
+# Gets the corresponding value of key and returns its actual character
+def get_character(key):
+    key_dict = {
+        97: "a", 98: "b", 99: "c", 100: "d", 101: "e", 102: "f", 103: "g", 104: "h",
+        105: "i", 106:"j", 107: "k", 108: "l", 109: "m", 110: "n", 111: "o", 112: "p",
+        113: "q", 114: "r", 115: "s", 116: "t", 117: "u", 118: "v", 119: "w",
+        120: "x", 121: "y",  122: "z"
+    }
+    return key_dict[key]
 
 
 # Wrapper improves and prevents some issues when running the curses terminal
