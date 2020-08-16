@@ -2,29 +2,30 @@ import curses
 from curses import wrapper
 import FishSearch as fs
 
+query = ""
 
 # Todo
 # Proper Confirm/Cancel and going back to the previous screen should be implemented
 # Could replace the entering of data one by one and instead have multiple fields and being able to tab between them
 # Resize error needs to be handled either by exception or using the os library to resize the terminal before crash
-# Search function that changes what fish are displayed on either the right or left screen
 # When pressing enter it would work better if the currently selected row is remembered so it doesn't start at the top
 # of the list
 
 #Search function _____
-# If letters are pressed then display them to the screen and change the data in the screen accordingly. If backspace is
-# pressed similarly update the list. If the search section is empty then display all fish. The search should work for
-# both screens and display them according to that. Probably don't need to remember the search data of one screen when it
-# changes to the other.
+# Need to reference the actual position of the array to delete rather than what it does now when you are searching a
+# fish and then choose to delete
+# The best way to fix this currently is to make use of a third column called quantity. That way when something is
+# deleted only the quantity is reduced.
+# Otherwise we could simply delete the first fish that is found that has the same name as the one we have selected.
+# Probably best to start with this and see if it works.
 
-# Three step process: First create the search box without any data in it. Then when an alphabetical key is pressed
-# instead of returning, the loop within that screen will restart with the data being redrawn based on the search query.
-# Remember to set selected row back to zero each time another character is written
+# Calculate which position it is in by going through current fish displayed based on search and increment a counter
+# of how many of that selected fish exist in it until it gets to the same index as the selected fish.
+# Then if there were 3 fish of the same name but the fish selected was the second one when we would delete the fish from
+# the array we wait till we get to the second one to delete it and delete that one.
 
 
-# Big revelation
-# Ignore where the actual cursor is placed on the screen. Simply have a search window located somewhere near the top of
-# the screen. When text is typed it will appear by using addstr()
+
 
 def main(stdscr):
     # 1 is essentially the variable of the created colour pair
@@ -56,6 +57,7 @@ def exit_menu(scr):
 
 # Run when the calculate profit option is selected
 def profit_menu(scr):
+    global query
     # Remove box around the mainscr
     scr.clear()
     scr.refresh()
@@ -67,7 +69,6 @@ def profit_menu(scr):
     # Draw the left and right screens with header data and footer text
     lscreen = lhalf_box_create(scr)
     rscreen = rhalf_box_create(scr)
-
     while 1:
         if current_screen == "left":
             fish_selected, key_pressed = lscreen_fish_menu(scr, lscreen, 0)
@@ -76,14 +77,11 @@ def profit_menu(scr):
                 rscreen_fish_menu(scr, rscreen, rscreen_fish_array)
             # If the right key is pressed and there are fish displayed on the right screen to select from
             elif key_pressed == curses.KEY_RIGHT and len(rscreen_fish_array) > 0:
-                # Remove the highlighting of the currently selected row on the left screen
-                highlighted_row = fish_selected[1]
-                highlighted_row.bkgd(' ', curses.color_pair(0))
-                highlighted_row.refresh()
                 # Set the current usable screen to right
+                query = ""
                 current_screen = "right"
         elif current_screen == "right":
-            array_pos, fish_selected, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
+            array_pos, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
             # If enter pressed remove selected fish from right screen
             if key_pressed == curses.KEY_ENTER or key_pressed in [10, 13]:
                 rscreen_fish_array.pop(array_pos)
@@ -95,11 +93,8 @@ def profit_menu(scr):
                     current_screen = "left"
             # If left key is pressed when on the right screen
             elif key_pressed == curses.KEY_LEFT:
-                # Remove the highlighting of the currently selected row on the right screen
-                highlighted_row = fish_selected[1]
-                highlighted_row.bkgd(' ', curses.color_pair(0))
-                highlighted_row.refresh()
                 # Change the current usable screen to left
+                query = ""
                 current_screen = "left"
 
 # Menu that displays information in the center of the screen. When enter is pressed it returns the selected row
@@ -141,8 +136,8 @@ def keyboard_movement_ud(scr, selected_row):
             return selected_row, key
         elif key == curses.KEY_ENTER or key in [10, 13]:
             return selected_row, key
-        #If the key is a character
-        elif 97 <= key <= 122:
+        #If the key is a character or spacebar
+        elif 97 <= key <= 122 or key == 32:
             selected_row = 0
             return selected_row, key
         #If the key is backspace
@@ -176,67 +171,44 @@ def window_reset(scr):
 
 # Returns the selected fish after pressing enter. Selected row can be none for when the screen shouldn't be controllable
 def lscreen_fish_menu(mainscr, scr, selected_row=None):
-    # lscreen will show all of the the fish in the file but could change depending on search options
-    fish_array = fs.get_fish_objects()
+    global query
+    # Get the full number of fish that exist into an array
+    full_fish_array = fs.get_fish_objects()
     # The starting position that the loop will read from when going through fish array. Required to allow for scrolling
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
-
+    # Creates search screen window with the proper dimensions
     searchscreen = search_box_create(mainscr)
     # Query begins empty
-    query = search_box_fill(searchscreen)
+    search_box_fill(searchscreen)
 
     while 1:
-        query = search_box_fill(searchscreen, query)
-        # The fish currently being shown on the screen since the screen size can vary. Clears itself when loop restarts
-        fish_displayed = []
-        maxh, maxw = scr.getmaxyx()
-        beginy, beginx = scr.getbegyx()
-        # The last row that text can be placed in
-        ending_row = maxh + beginy - 1
-        # The size of each row window
-        row_scr_height = get_row_height()
-        row_scr_width = get_row_width(maxw)
+        lhalf_box_create(mainscr)
+        search_box_fill(searchscreen)
+        fish_array = full_fish_array
+        # Depending on the search query change which fish are now displayed
+        if len(query) > 0:
+            fish_array = [fish for fish in fish_array if fish.name[0:len(query)].lower() == query]
 
-        # x positions that the text on the screen starts at
-        name_pos = 0
-        price_pos = row_scr_width // 2
-        location_pos = row_scr_width - (row_scr_width // 4)
-
-        # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
-        row_y = 0
-
-        for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
-            # The position the new window starts getting created from
-            start_y = beginy + 2 + idx
-            start_x = beginx + 1
-            # Only adds next row if it won't overflow off screen
-            if start_y < ending_row:
-                # Creates a new window that will store a row's worth of fish data including name, price, location
-                scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
-
-                # Checking if the menu is selectable to decide if highlighting the row is valid
-                if selected_row is not None:
-                    if selected_row == idx:
-                        scr_row.bkgd(' ', curses.color_pair(1))
-
-                scr_row.addstr(row_y, name_pos, row.name)
-                scr_row.addstr(row_y, price_pos, row.price)
-                scr_row.addstr(row_y, location_pos, row.location)
-
-                scr_row.refresh()
-                fish_displayed.append([row, scr_row])
+        fish_displayed = fill_box(scr, selected_row, fish_array, fish_array_start, "left")
 
         # Determines if the list is read only or if it can be navigated through
         if selected_row is not None:
             selected_row, key = keyboard_movement_ud(mainscr, selected_row)
             # If the enter key or right key is pressed return the selected fish with the key
-            if key == curses.KEY_ENTER or key in [10, 13] or key == curses.KEY_RIGHT:
+            if key == curses.KEY_ENTER or key in [10, 13] and len(fish_displayed) > 0:
                 # Return the selected fish along with the row data to clear highlight and the key pressed
                 return fish_displayed[selected_row], key
-            elif 97 <= key <= 122:
+            elif key == curses.KEY_RIGHT:
+                # Refills the left box with all the items in the array
+                fill_box(scr, None, full_fish_array, 0, "left")
+                # Returns something for the fish_selected to prevent missing data errors
+                return None, key
+            elif 97 <= key <= 122 or key == 32:
                 query += get_character(key)
+                fish_array_position = 0
+                fish_array_start = 0
             elif key == curses.KEY_BACKSPACE or key == 8 and query != "":
                 query = query[:-1]
             # If up or down key is pressed determine how it should be handled
@@ -251,63 +223,54 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
 
 # Returns the selected fish after pressing enter. Selected row can be none for when the screen shouldn't be controllable
 def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
+    global query
     # rscreen will show fish received through the function parameter based on user selection
     # The starting position that the loop will read from when going through fish array. Required to allow for scrolling
     fish_array_start = 0
     # The position of the selected fish in relation to the whole array as opposed to the array of fish being displayed
     fish_array_position = 0
-
-    if len(fish_array) > 0:
-        create_footer_row(fish_array, scr)
+    full_fish_array = fish_array
+    # Creates search screen window with the proper dimensions
+    searchscreen = search_box_create(mainscr)
+    # Query begins empty
+    search_box_fill(searchscreen)
 
     while 1:
+        rhalf_box_create(mainscr)
+        search_box_fill(searchscreen)
+        fish_array = full_fish_array
+        # Depending on the search query change which fish are now displayed as long as the right screen is being used
+        if len(query) > 0 and selected_row is not None:
+            fish_array = [fish for fish in fish_array if fish.name[0:len(query)].lower() == query]
+
+        create_footer_row(fish_array, scr)
         # The fish currently being shown on the screen since the screen size can vary. Clears itself when loop restarts
-        fish_displayed = []
-        maxh, maxw = scr.getmaxyx()
-        beginy, beginx = scr.getbegyx()
-        # The last row that text can be placed in. - 2 to make room for footer
-        ending_row = maxh + beginy - 2
-        # The size of each row window
-        row_scr_height = 1
-        row_scr_width = maxw - 2
-
-        # x positions that the text on the screen starts at
-        name_pos = 0
-        price_pos = row_scr_width - (row_scr_width // 7)
-
-        # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
-        row_y = 0
-
-        for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
-            # The position the new window starts getting created from
-            start_y = beginy + 2 + idx
-            start_x = beginx + 1
-            # Only adds next row if it won't overflow off screen
-            if start_y < ending_row:
-                # Creates a new window that will store a row's worth of fish data including name and price
-                scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
-
-                # Checking if the menu is selectable to decide if highlighting the row is valid
-                if selected_row is not None:
-                    if selected_row == idx:
-                        scr_row.bkgd(' ', curses.color_pair(1))
-
-                scr_row.addstr(row_y, name_pos, row.name)
-                scr_row.addstr(row_y, price_pos, row.price)
-
-                scr_row.refresh()
-                fish_displayed.append([row, scr_row])
+        fish_displayed = fill_box(scr, selected_row, fish_array, fish_array_start, "right")
 
         # Determines if the list is read only or if it can be navigated through
         if selected_row is not None:
             selected_row, key = keyboard_movement_ud(mainscr, selected_row)
             # If the enter key is pressed return the selected fish
-            if key == curses.KEY_ENTER or key in [10, 13] or key == curses.KEY_LEFT:
+            if key == curses.KEY_ENTER or key in [10, 13]:
                 # Return the position the fish to be deleted is in the array, the fish displayed data which contains
                 # information on the row to clear highlighting and the key pressed
-                return fish_array_position, fish_displayed[selected_row], key
+                return fish_array_position, key
+            elif key == curses.KEY_LEFT:
+                # Refills the right box with all the items in the array and the array sum
+                fill_box(scr, None, full_fish_array, 0, "right")
+                create_footer_row(full_fish_array, scr)
+                # Returns something for the fish_selected to prevent missing data errors
+                if len(fish_displayed) == 0:
+                    return None, key
+                return fish_displayed[selected_row], key
+            elif 97 <= key <= 122 or key == 32:
+                query += get_character(key)
+                fish_array_start = 0
+                fish_array_position = 0
+            elif key == curses.KEY_BACKSPACE or key == 8 and query != "":
+                query = query[:-1]
             # If up or down was pressed determine how it should be handled
-            else:
+            elif key == curses.KEY_UP or key == curses.KEY_DOWN:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
                                                                                          selected_row, fish_array_start,
                                                                                          fish_array, fish_displayed)
@@ -362,7 +325,8 @@ def search_box_create(scr):
 
 
 # Fills the search box with the current search query. Returns the updated query for when its size needs to be reduced
-def search_box_fill(scr, query=""):
+def search_box_fill(scr):
+    global query
     scr.clear()
     maxy, maxx = scr.getmaxyx()
     box_start_x = 1
@@ -377,8 +341,6 @@ def search_box_fill(scr, query=""):
     else:
         query = query[:-1]
     return query
-
-
 
 
 # Draws the left window and draws a visible box for its outline. Returns the window object
@@ -430,6 +392,65 @@ def rhalf_box_create(scr):
 
     return rscreen
 
+# Fills the box with all fish that can fit the display and sets the selected row
+def fill_box(scr, selected_row, fish_array, fish_array_start, scr_side):
+    # The fish currently being shown on the screen since the screen size can vary.
+    fish_displayed = []
+
+    maxh, maxw = scr.getmaxyx()
+    beginy, beginx = scr.getbegyx()
+    # The last row that text can be placed in
+    # The size of each row window
+    row_scr_height = get_row_height()
+    row_scr_width = get_row_width(maxw)
+    name_pos = 0
+    price_pos = 0
+    location_pos = 0
+    ending_row = 0
+
+    if scr_side == "left":
+        # x positions that the text on the screen starts at
+        name_pos = 0
+        price_pos = row_scr_width // 2
+        location_pos = row_scr_width - (row_scr_width // 4)
+        ending_row = maxh + beginy - 1
+    elif scr_side == "right":
+        name_pos = 0
+        price_pos = row_scr_width - (row_scr_width//7)
+        ending_row = maxh + beginy - 2
+
+    # Each row has a height of 1 so row_y being the start position of the item in relation to y is always 0
+    row_y = 0
+
+    # Loops through the array from the start of what is displayed to the end of what is displayed
+    for idx, row in enumerate(fish_array[fish_array_start:len(fish_array)]):
+        # The position the new window starts getting created from
+        start_y = beginy + 2 + idx
+        start_x = beginx + 1
+        # Only adds next row if it won't overflow off screen
+        if start_y < ending_row:
+            # Creates a new window that will store a row's worth of fish data including name, price, location
+            scr_row = curses.newwin(row_scr_height, row_scr_width, start_y, start_x)
+
+            # Checking if the menu is selectable to decide if highlighting the row is valid
+            if selected_row is not None:
+                if selected_row == idx:
+                    scr_row.bkgd(' ', curses.color_pair(1))
+
+            if scr_side == "left":
+                scr_row.addstr(row_y, name_pos, row.name)
+                scr_row.addstr(row_y, price_pos, row.price)
+                scr_row.addstr(row_y, location_pos, row.location)
+            elif scr_side == "right":
+                scr_row.addstr(row_y, name_pos, row.name)
+                scr_row.addstr(row_y, price_pos, row.price)
+
+            scr_row.refresh()
+            fish_displayed.append([row, scr_row])
+        else:
+            break
+
+    return fish_displayed
 
 # Creates the heading parts of a row that is placed above the actual fish list
 def create_heading_row(heading_array, scr):
@@ -452,8 +473,12 @@ def create_heading_row(heading_array, scr):
 # Create the sum data appended to the bottom of the footer with all of the selected fish
 def create_footer_row(fish_array, scr):
     maxh, maxw = scr.getmaxyx()
-    fish_prices = [int(item.price) for item in fish_array]
-    fish_total = fs.sum_fish(fish_prices)
+    fish_total = 0
+
+    if len(fish_array) > 0:
+        fish_prices = [int(item.price) for item in fish_array]
+        fish_total = fs.sum_fish(fish_prices)
+
     footer_start_y = maxh + 3
     footer_start_x = maxw + 1
 
@@ -482,12 +507,15 @@ def get_row_width(max_w):
 # Gets the corresponding value of key and returns its actual character
 def get_character(key):
     key_dict = {
-        97: "a", 98: "b", 99: "c", 100: "d", 101: "e", 102: "f", 103: "g", 104: "h",
+        32: " ", 97: "a", 98: "b", 99: "c", 100: "d", 101: "e", 102: "f", 103: "g", 104: "h",
         105: "i", 106:"j", 107: "k", 108: "l", 109: "m", 110: "n", 111: "o", 112: "p",
         113: "q", 114: "r", 115: "s", 116: "t", 117: "u", 118: "v", 119: "w",
         120: "x", 121: "y",  122: "z"
     }
     return key_dict[key]
+
+
+
 
 
 # Wrapper improves and prevents some issues when running the curses terminal
