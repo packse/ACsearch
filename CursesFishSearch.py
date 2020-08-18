@@ -8,22 +8,7 @@ query = ""
 # Proper Confirm/Cancel and going back to the previous screen should be implemented
 # Could replace the entering of data one by one and instead have multiple fields and being able to tab between them
 # Resize error needs to be handled either by exception or using the os library to resize the terminal before crash
-# When pressing enter it would work better if the currently selected row is remembered so it doesn't start at the top
-# of the list
-
-#Search function _____
-# Need to reference the actual position of the array to delete rather than what it does now when you are searching a
-# fish and then choose to delete
-# The best way to fix this currently is to make use of a third column called quantity. That way when something is
-# deleted only the quantity is reduced.
-# Otherwise we could simply delete the first fish that is found that has the same name as the one we have selected.
-# Probably best to start with this and see if it works.
-
-# Calculate which position it is in by going through current fish displayed based on search and increment a counter
-# of how many of that selected fish exist in it until it gets to the same index as the selected fish.
-# Then if there were 3 fish of the same name but the fish selected was the second one when we would delete the fish from
-# the array we wait till we get to the second one to delete it and delete that one.
-
+# When pressing enter the currently selected row is remembered so it doesn't start at the top of the list
 
 
 
@@ -73,7 +58,7 @@ def profit_menu(scr):
         if current_screen == "left":
             fish_selected, key_pressed = lscreen_fish_menu(scr, lscreen, 0)
             if key_pressed == curses.KEY_ENTER or key_pressed in [10, 13]:
-                rscreen_fish_array.append(fish_selected[0])
+                rscreen_fish_array.append(fish_selected)
                 rscreen_fish_menu(scr, rscreen, rscreen_fish_array)
             # If the right key is pressed and there are fish displayed on the right screen to select from
             elif key_pressed == curses.KEY_RIGHT and len(rscreen_fish_array) > 0:
@@ -81,10 +66,18 @@ def profit_menu(scr):
                 query = ""
                 current_screen = "right"
         elif current_screen == "right":
-            array_pos, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
+            fish_name, skip_num, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
             # If enter pressed remove selected fish from right screen
             if key_pressed == curses.KEY_ENTER or key_pressed in [10, 13]:
-                rscreen_fish_array.pop(array_pos)
+                # Removes fish from the array using the name and how many increments it is.
+                # E.g. A skip_num of 1 would mean that it needs to skip 1 fish with the same fish_name and delete the
+                # next fish with the value of fish name
+                array_index = 0
+                while skip_num != -1:
+                    if rscreen_fish_array[array_index].name == fish_name:
+                        skip_num -= 1
+                    array_index += 1
+                rscreen_fish_array.pop(array_index-1)
                 # Need to clear and redraw the entire screen to remove list items
                 rscreen.clear()
                 rscreen = rhalf_box_create(scr)
@@ -252,17 +245,27 @@ def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
             selected_row, key = keyboard_movement_ud(mainscr, selected_row)
             # If the enter key is pressed return the selected fish
             if key == curses.KEY_ENTER or key in [10, 13]:
+                # This function is required to get the correct position when the search menu is being used
+                # How many times the loop in profit_menu must continue in order to get the correct position of which
+                # fish to delete
+                num_fish_before = 0
+                fish_name = fish_displayed[selected_row].name
+                i = 0
+                while i != selected_row:
+                    # If the name of the selected fish is the same as the current then there exists one additional fish
+                    if fish_displayed[i].name == fish_name:
+                        # Increment the number of same name fish before the selected fish by one
+                        num_fish_before += 1
+                    i += 1
                 # Return the position the fish to be deleted is in the array, the fish displayed data which contains
                 # information on the row to clear highlighting and the key pressed
-                return fish_array_position, key
+                return fish_name, num_fish_before, key
             elif key == curses.KEY_LEFT:
                 # Refills the right box with all the items in the array and the array sum
                 fill_box(scr, None, full_fish_array, 0, "right")
                 create_footer_row(full_fish_array, scr)
                 # Returns something for the fish_selected to prevent missing data errors
-                if len(fish_displayed) == 0:
-                    return None, key
-                return fish_displayed[selected_row], key
+                return None, None, key
             elif 97 <= key <= 122 or key == 32:
                 query += get_character(key)
                 fish_array_start = 0
@@ -446,7 +449,7 @@ def fill_box(scr, selected_row, fish_array, fish_array_start, scr_side):
                 scr_row.addstr(row_y, price_pos, row.price)
 
             scr_row.refresh()
-            fish_displayed.append([row, scr_row])
+            fish_displayed.append(row)
         else:
             break
 
