@@ -22,22 +22,27 @@ def main(stdscr):
 def start_menu(scr):
     curses.curs_set(0)
     start_menu_items = ["Calculate Profit", "Add Fish", "Delete Fish", "Edit Fish", "Exit"]
-    menu_selection = centered_menu_ud(scr, start_menu_items, 0, "Animal Crossing Fish Search")
-    if menu_selection == 0:
-        profit_menu(scr)
-    elif menu_selection == len(start_menu_items) - 1:
-        exit_menu(scr)
+    while 1:
+        menu_selection = centered_menu_ud(scr, start_menu_items, 0, "Animal Crossing Fish Search")
+        if menu_selection == 0:
+            profit_menu(scr)
+        elif menu_selection == 1:
+            add_fish(scr)
+        # When exit is selected or the esc key is pressed
+        elif menu_selection == len(start_menu_items) - 1 or menu_selection == -1:
+            quit_confirm = exit_menu(scr)
+            if quit_confirm:
+                curses.endwin()
+                break
 
 
-# Run when the exit option is selected to confirm the decision
+# Run when the exit option is selected to ask for confirmation in the decision
 def exit_menu(scr):
     exit_menu_items = ["Yes", "No"]
     window_reset(scr)
     menu_selection = centered_menu_ud(scr, exit_menu_items, 0, "Are you sure you want to quit?")
     if menu_selection == 0:
-        curses.endwin()
-    else:
-        start_menu(scr)
+        return True
 
 
 # Run when the calculate profit option is selected
@@ -65,6 +70,9 @@ def profit_menu(scr):
                 # Set the current usable screen to right
                 query = ""
                 current_screen = "right"
+            elif key_pressed == 27:
+                query = ""
+                return
         elif current_screen == "right":
             fish_name, skip_num, key_pressed = rscreen_fish_menu(scr, rscreen, rscreen_fish_array, 0)
             # If enter pressed remove selected fish from right screen
@@ -89,6 +97,23 @@ def profit_menu(scr):
                 # Change the current usable screen to left
                 query = ""
                 current_screen = "left"
+            elif key_pressed == 27:
+                query = ""
+                return
+
+def add_fish(scr):
+    def add_name():
+        pass
+
+    window_reset(scr)
+    while 1:
+        key = scr.getch()
+        if key == curses.KEY_BACKSPACE or key == 8:
+            pass
+
+def top_heading(scr):
+    pass
+
 
 # Menu that displays information in the center of the screen. When enter is pressed it returns the selected row
 def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
@@ -115,30 +140,36 @@ def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
             selected_row = 0
         elif key == curses.KEY_ENTER or key in [10, 13]:
             return selected_row
+        # If key is esc
+        elif key == 27:
+            return selected_row
 
 
 # Returns the currently selected row and the key pressed as a tuple
 def keyboard_movement_ud(scr, selected_row):
-    while 1:
-        key = scr.getch()
-        if key == curses.KEY_UP:
-            selected_row -= 1
-            return selected_row, key
-        elif key == curses.KEY_DOWN:
-            selected_row += 1
-            return selected_row, key
-        elif key == curses.KEY_ENTER or key in [10, 13]:
-            return selected_row, key
-        #If the key is a character or spacebar
-        elif 97 <= key <= 122 or key == 32:
-            selected_row = 0
-            return selected_row, key
-        #If the key is backspace
-        elif key == curses.KEY_BACKSPACE or 8:
-            return selected_row, key
-        # Checks if the screen is resized as this requires exiting the loop and redrawing the terminal
-        elif curses.KEY_RESIZE:
-            return selected_row, key
+    key = scr.getch()
+    if key == curses.KEY_UP:
+        selected_row -= 1
+        return selected_row, key
+    elif key == curses.KEY_DOWN:
+        selected_row += 1
+        return selected_row, key
+    elif key == curses.KEY_ENTER or key in [10, 13]:
+        return selected_row, key
+    # If the key is a character or spacebar
+    elif 97 <= key <= 122 or key == 32:
+        selected_row = 0
+        return selected_row, key
+    # If the key is backspace
+    elif key == curses.KEY_BACKSPACE or key == 8:
+        return selected_row, key
+    # If the selected key is escape then return -1
+    elif key == 27:
+        selected_row = -1
+        return selected_row, key
+    # Checks if the screen is resized as this requires exiting the loop and redrawing the terminal
+    elif curses.KEY_RESIZE:
+        return selected_row, key
 
 
 # Displays header text above the centered menu
@@ -204,6 +235,9 @@ def lscreen_fish_menu(mainscr, scr, selected_row=None):
                 fish_array_start = 0
             elif key == curses.KEY_BACKSPACE or key == 8 and query != "":
                 query = query[:-1]
+            # If escape is pressed go back to the previous screen
+            elif key == 27:
+                return None, key
             # If up or down key is pressed determine how it should be handled
             elif key == curses.KEY_UP or key == curses.KEY_DOWN:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
@@ -272,6 +306,9 @@ def rscreen_fish_menu(mainscr, scr, fish_array, selected_row=None):
                 fish_array_position = 0
             elif key == curses.KEY_BACKSPACE or key == 8 and query != "":
                 query = query[:-1]
+            # If escape is pressed go back to the previous screen
+            elif key == 27:
+                return None, key
             # If up or down was pressed determine how it should be handled
             elif key == curses.KEY_UP or key == curses.KEY_DOWN:
                 selected_row, fish_array_position, fish_array_start = keyboard_selection(key, fish_array_position,
@@ -325,7 +362,6 @@ def search_box_create(scr):
     searchscreen = curses.newwin(smaxh, smaxw, begin_y, begin_x)
 
     return searchscreen
-
 
 # Fills the search box with the current search query. Returns the updated query for when its size needs to be reduced
 def search_box_fill(scr):
@@ -497,7 +533,6 @@ def create_footer_row(fish_array, scr):
     footer_row.refresh()
 
 
-
 # Gets the height of a single row of data. Used to prevent it being a global variable
 def get_row_height():
     return 1
@@ -516,8 +551,6 @@ def get_character(key):
         120: "x", 121: "y",  122: "z"
     }
     return key_dict[key]
-
-
 
 
 
