@@ -21,13 +21,11 @@ def main(stdscr):
 # Run when the program is started
 def start_menu(scr):
     curses.curs_set(0)
-    start_menu_items = ["Calculate Profit", "Add Fish", "Delete Fish", "Edit Fish", "Exit"]
+    start_menu_items = ["Calculate Profit", "Add Fish (To be added)", "Delete Fish (To be added)", "Edit Fish (To be added)", "Exit"]
     while 1:
         menu_selection = centered_menu_ud(scr, start_menu_items, 0, "Animal Crossing Fish Search")
         if menu_selection == 0:
             profit_menu(scr)
-        elif menu_selection == 1:
-            add_fish(scr)
         # When exit is selected or the esc key is pressed
         elif menu_selection == len(start_menu_items) - 1 or menu_selection == -1:
             quit_confirm = exit_menu(scr)
@@ -100,20 +98,6 @@ def profit_menu(scr):
             elif key_pressed == 27:
                 query = ""
                 return
-
-def add_fish(scr):
-    def add_name():
-        pass
-
-    window_reset(scr)
-    while 1:
-        key = scr.getch()
-        if key == curses.KEY_BACKSPACE or key == 8:
-            pass
-
-def top_heading(scr):
-    pass
-
 
 # Menu that displays information in the center of the screen. When enter is pressed it returns the selected row
 def centered_menu_ud(scr, menu_items, selected_row, header_text=""):
@@ -390,6 +374,8 @@ def lhalf_box_create(scr):
     lscreen = curses.newwin(lmaxh, lmaxw, begin_y, begin_x)
     lscreen.box()
     lscreen.refresh()
+    heading_text = "Fish Profit"
+    scr.addstr(1, (maxw//2) - (len(heading_text) // 2), heading_text , curses.A_BOLD)
 
     # The width of each row window
     row_scr_width = get_row_width(lmaxw)
