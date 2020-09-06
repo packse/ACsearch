@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4b0318b5-6899-423e-ad34-5c2ed31098fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CursesFishSearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/CursesFishSearch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FishSearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/FishSearch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,35 +31,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Tim\Desktop\Codility" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CursesFishSearch">
-    <configuration name="Count unique Numbers" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="FishSearch" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Desktop/Codility" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/Desktop/Codility/Count unique Numbers.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.FishSearch">
     <configuration name="CursesFishSearch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FishSearch" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -76,6 +55,27 @@
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="FishSearch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FishSearch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FishSearch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
@@ -145,19 +145,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.Count unique Numbers" />
       <item itemvalue="Python.Get century from year" />
       <item itemvalue="Python.scratch_4" />
       <item itemvalue="Python.scratch" />
       <item itemvalue="Python.CursesFishSearch" />
+      <item itemvalue="Python.FishSearch" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.FishSearch" />
         <item itemvalue="Python.CursesFishSearch" />
         <item itemvalue="Python.scratch" />
         <item itemvalue="Python.scratch_4" />
         <item itemvalue="Python.Get century from year" />
-        <item itemvalue="Python.Count unique Numbers" />
       </list>
     </recent_temporary>
   </component>
@@ -179,10 +179,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="368" y="0" key="#CursesFishSearch/0.0.1280.680@0.0.1280.680" timestamp="1598342069752" />
-    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596889531654">
+    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598521470687">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1596889531654" />
+    <state x="17" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1598521470687" />
     <state x="534" y="94" key="#xdebugger.XInspectDialog" timestamp="1595563887639">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -195,46 +195,46 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="847" y="80" width="438" height="482" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1598339395270" />
-    <state width="1259" height="239" key="GridCell.Tab.0.bottom" timestamp="1598435614021">
+    <state width="1259" height="239" key="GridCell.Tab.0.bottom" timestamp="1599292483168">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="239" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1598435614021" />
-    <state width="1259" height="239" key="GridCell.Tab.0.center" timestamp="1598435614021">
+    <state width="1259" height="239" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1599292483168" />
+    <state width="1259" height="239" key="GridCell.Tab.0.center" timestamp="1599292483168">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="239" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1598435614021" />
-    <state width="1259" height="239" key="GridCell.Tab.0.left" timestamp="1598435614021">
+    <state width="1259" height="239" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1599292483168" />
+    <state width="1259" height="239" key="GridCell.Tab.0.left" timestamp="1599292483168">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="239" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1598435614021" />
-    <state width="1259" height="239" key="GridCell.Tab.0.right" timestamp="1598435614021">
+    <state width="1259" height="239" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1599292483168" />
+    <state width="1259" height="239" key="GridCell.Tab.0.right" timestamp="1599292483168">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="239" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1598435614021" />
-    <state width="1259" height="224" key="GridCell.Tab.1.bottom" timestamp="1598435308817">
+    <state width="1259" height="239" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1599292483168" />
+    <state width="1259" height="224" key="GridCell.Tab.1.bottom" timestamp="1599292483164">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="224" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1598435308817" />
-    <state width="1259" height="224" key="GridCell.Tab.1.center" timestamp="1598435308817">
+    <state width="1259" height="224" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1599292483164" />
+    <state width="1259" height="224" key="GridCell.Tab.1.center" timestamp="1599292483164">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="224" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1598435308817" />
-    <state width="1259" height="224" key="GridCell.Tab.1.left" timestamp="1598435308817">
+    <state width="1259" height="224" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1599292483164" />
+    <state width="1259" height="224" key="GridCell.Tab.1.left" timestamp="1599292483164">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="224" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1598435308817" />
-    <state width="1259" height="224" key="GridCell.Tab.1.right" timestamp="1598435308817">
+    <state width="1259" height="224" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1599292483164" />
+    <state width="1259" height="224" key="GridCell.Tab.1.right" timestamp="1599292483164">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1259" height="224" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1598435308817" />
+    <state width="1259" height="224" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1599292483164" />
     <state x="454" y="55" key="RollbackChangesDialog" timestamp="1595409717895">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="454" y="55" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1595409717895" />
-    <state x="144" y="0" key="SettingsEditor" timestamp="1596889524273">
+    <state x="144" y="0" key="SettingsEditor" timestamp="1598521505129">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="144" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1596889524273" />
+    <state x="144" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1598521505129" />
     <state x="349" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1598432797750">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -255,6 +255,11 @@
           <url>file://$USER_HOME$/Desktop/Codility/Array Shift.py</url>
           <line>17</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/FishSearch.py</url>
+          <line>86</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

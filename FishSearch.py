@@ -48,7 +48,7 @@ class Fish:
 
     @name.setter
     def name(self, new_name):
-        if new_name.isalpha() and not new_name.isspace():
+        if not new_name.isnumeric():
             self._name = new_name
 
     @property
